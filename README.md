@@ -13,7 +13,7 @@
 | Name                         | Role/Contribution              | GitHub Username  |  NPM | 
 |------------------------------|--------------------------------|------------------|------|  
 | Andriyo Averill Fahrezi      |          | @muzkii          | 2306172325   | 
-| Aleksey Panfilov             |            | -                |  2406394370 |
+| Aleksey Panfilov             |            | @ankou-k                |  2406394370 |
 | Catherine Aurellia           |             | -                |  2306256261 |
 | Chiara Aqmarina Diankusumo   |                    | -                |  2306171480 |
 | Kusuma Ratih Hanindyani      |                 | -                |  2306256406 |
