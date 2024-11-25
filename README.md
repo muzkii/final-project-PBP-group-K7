@@ -51,7 +51,8 @@
 ## :busts_in_silhouette: Roles/Actors  
 1. **Customer**  
     - View canteen stalls, browse menus, search, and filter options.  
-    - Write and read reviews for stalls.  
+    - Write and read reviews for stalls.
+    - Add their own favorite products to the favorite products page
 2. **Admin/Merchant**  
     - Modify website content, including faculties, canteens, stalls, products, and reviews.  
     - Access and manage all canteen stalls and administrative settings.  
