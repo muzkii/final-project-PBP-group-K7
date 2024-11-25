@@ -28,14 +28,14 @@
 ---
 
 ## :memo: Modules and Work Division  
-### Modules Implemented  
-1. **CRUD Faculty**: Implement adding, updating, viewing, and deleting faculties.  
+### Modules Implemented _FLUTTER_
+1. **CRD Faculty**: Implement adding,  viewing, and deleting faculties.  
     - Developed by:  
-2. **CRUD Canteen**: Manage canteen information.  
+2. **CRD Canteen**: Manage canteen information.  
     - Developed by: 
-3. **CRUD Stall**: Add, update, and remove stall information within canteens.  
+3. **CRD Stall**: Add, update, and remove stall information within canteens.  
     - Developed by:  
-4. **CRUD Product**: Maintain product details within stalls.  
+4. **CRD Product**: Maintain product details within stalls.  
     - Developed by:  
 5. **Homepage**: Create the homepage to display canteen summaries.  
     - Developed by:   
@@ -47,7 +47,27 @@
     - Developed by:   
 9. **Favorite Foods**: Allow users to save their favorite food.
     - Developed by:
-    
+  
+### Modules Implemented _DJANGO_
+1. **CR Flutter Login**: Create a new login inside `views.py` to hamdle Flutter logins
+    - Developed by: 
+2. **CR Flutter Register**: Create a new register inside `views.py` to handle Fluter registers
+    - Developed by:
+3. **RU Flutter Logout**: Create a new logout inside `views.py` to handle Flutter logouts
+    - Developed by: 
+5. **CRD Flutter Faculty**: Implement adding and deleting Faculty for the Flutter project
+    - Developed by:
+6. **CRD Flutter Canteen**: Implement adding and deleting Canteen for the Flutter project
+    - Developed by:
+7. **CRD Flutter Stall**: Implement adding and deleting Stall for the Flutter project
+    - Developed by:
+8. **CRD Flutter Product**: Implement adding and deleting Product for the Flutter project
+    - Developed by:
+9. **CRD Flutter Reviews**: Implement adding and deleting Review for the Flutter project
+    - Developed by:
+10. Update the models of our Django Project such that it can be integrated with the Flutter project
+    - Developed by:
+
 ---
 
 ## :busts_in_silhouette: Roles/Actors  
