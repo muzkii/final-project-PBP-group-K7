@@ -45,7 +45,8 @@
     - Developed by:   
 8. **Search Bar, Navbar, and Filters**: Enhance navigation and content filtering.  
     - Developed by:   
-
+9. **Favorite Foods**: Allow users to save their favorite food.
+    - Developed by:
 ---
 
 ## :busts_in_silhouette: Roles/Actors  
