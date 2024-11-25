@@ -64,8 +64,8 @@ This application integrates with the web service created during the first semest
 
 ### Features Enabled by Integration:  
 - **Seamless Data Sync**: Data for faculties, canteens, stalls, and products are synchronized between the backend API and the Flutter web app.  
-- **RESTful API Support**: The application supports CRUD operations for entities via a robust REST API.  
-- **Scalability**: The integration is designed to allow modular additions for future functionalities, such as analytics or real-time updates.  
+- **Scalability**: The integration is designed to allow modular additions for future functionalities, such as analytics or real-time updates.
+- **On The Go**: Real time updates both the web and mobile version for the same account user
 
 --- 
 
