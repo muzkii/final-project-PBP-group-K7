@@ -41,7 +41,7 @@
     - Developed by:   
 6. **Login and Register**: Authentication for user and admin accounts.  
     - Developed by:   
-7. **CRUD Reviews**: Enable customers to write and view stall reviews.  
+7. **CRD Reviews**: Enable customers to write and view stall reviews.  
     - Developed by:   
 8. **Search Bar, Navbar, and Filters**: Enhance navigation and content filtering.  
     - Developed by:   
