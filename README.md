@@ -62,7 +62,12 @@
 ---
 
 ## Integration with Web Service  
-This application integrates with the web service created during the first semester project.  
+This application integrates with the web service created during the first semester project deployed to the PWS website. Step-by-step:
+
+1. Using `django-cors-headers`, `pbp_django_auth` package, and `provider` package.
+2. Create a new application to handle authentication for the Flutter project, implement all the `views.py` and `urls.py` for the given application.
+3. Fetch the JSON data using [Quicktype](http://app.quicktype.io/) website and create a respective entry accordingly
+4. Create new CRUD function inside `views.py` of our `main` application for the Flutter project on our Django Midterm Project.
 
 ### Features Enabled by Integration:  
 - **Seamless Data Sync**: Data for faculties, canteens, stalls, and products are synchronized between the backend API and the Flutter web app.  
@@ -70,5 +75,3 @@ This application integrates with the web service created during the first semest
 - **On The Go**: Real time updates both the web and mobile version for the same account user
 
 --- 
-
-Let me know if you need further customization!
