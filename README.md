@@ -14,10 +14,10 @@
 |------------------------------|--------------------------------|------------------|------|  
 | Andriyo Averill Fahrezi      |          | @muzkii          | 2306172325   | 
 | Aleksey Panfilov             |            | @ankou-k                |  2406394370 |
-| Catherine Aurellia           |             | -                |  2306256261 |
+| Catherine Aurellia           |             | @neaurellia                |  2306256261 |
 | Chiara Aqmarina Diankusumo   |                    | @caqqmarina                |  2306171480 |
-| Kusuma Ratih Hanindyani      |                 | -                |  2306256406 |
-| Rayienda Hasmaradana Najlamahsa |          | -               |  2306172735 |
+| Kusuma Ratih Hanindyani      |                 | @ksmratih                |  2306256406 |
+| Rayienda Hasmaradana Najlamahsa |          | @rayienda               |  2306172735 |
 
 ---
 
