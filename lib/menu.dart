@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'widgets/left_drawer.dart';
 
 class MyHomePage extends StatelessWidget {
 
@@ -25,7 +26,10 @@ class MyHomePage extends StatelessWidget {
         ),
         // The background color of the AppBar is obtained from the application theme color scheme.
         backgroundColor: Theme.of(context).colorScheme.primary,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
+      // Add drawer as a parameter value for the drawer attribute of the Scaffold widget
+      drawer: const LeftDrawer(),
       // Body of the page with paddings around it.
       body: Padding(
         padding: const EdgeInsets.all(16.0),
