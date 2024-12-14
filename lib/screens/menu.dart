@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../widgets/left_drawer.dart';
 
 class MyHomePage extends StatelessWidget {
-  // Create a GlobalKey to manage the Scaffold
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<ItemHomepage> items = [
@@ -15,16 +14,13 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width; // Get screen width
-    final screenHeight = MediaQuery.of(context).size.height; // Get screen height
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final cardWidth = screenWidth * 0.8;
 
     return Scaffold(
-      key: _scaffoldKey, // Assign the GlobalKey to the Scaffold
-
-      // Drawer for navigation
+      key: _scaffoldKey,
       drawer: const LeftDrawer(),
-
-      // Bottom navigation bar replacing the top AppBar
       bottomNavigationBar: BottomAppBar(
         color: Theme.of(context).colorScheme.primary,
         child: Row(
@@ -33,7 +29,7 @@ class MyHomePage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.menu, color: Colors.white),
               onPressed: () {
-                _scaffoldKey.currentState?.openDrawer(); // Use the GlobalKey to open the drawer
+                _scaffoldKey.currentState?.openDrawer();
               },
             ),
             const Text(
@@ -44,11 +40,10 @@ class MyHomePage extends StatelessWidget {
                 fontSize: 18,
               ),
             ),
-            const SizedBox(width: 48), // Spacer to balance the layout
+            const SizedBox(width: 48),
           ],
         ),
       ),
-
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,10 +53,10 @@ class MyHomePage extends StatelessWidget {
               alignment: Alignment.center,
               children: [
                 Image.asset(
-                  'assets/pictures/heading1_mieayam.png', // Correct asset path
-                  width: double.infinity, // Full width of the container
-                  height: screenHeight * 0.25, // Adjust height dynamically
-                  fit: BoxFit.cover, // Ensures the image covers the header space
+                  'assets/pictures/heading1_mieayam.png',
+                  width: double.infinity,
+                  height: screenHeight * 0.25,
+                  fit: BoxFit.cover,
                 ),
               ],
             ),
@@ -73,7 +68,7 @@ class MyHomePage extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(15), // Rounded rectangle with smaller radius
+                  borderRadius: BorderRadius.circular(15),
                 ),
                 child: Row(
                   children: [
@@ -82,13 +77,13 @@ class MyHomePage extends StatelessWidget {
                         decoration: InputDecoration(
                           hintText: "Find food just for you",
                           hintStyle: TextStyle(
-                            fontFamily: 'Poppins', // Apply Poppins font
-                            fontSize: screenWidth * 0.025, // Responsive font size
+                            fontFamily: 'Poppins',
+                            fontSize: screenWidth * 0.025,
                           ),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16,
-                            vertical: 12, // Adjust padding for a more rectangular shape
+                            vertical: 12,
                           ),
                         ),
                       ),
@@ -96,7 +91,7 @@ class MyHomePage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Image.asset(
-                        'assets/pictures/search.png', // Update with the correct asset path
+                        'assets/pictures/search.png',
                         width: 38,
                         height: 38,
                       ),
@@ -105,10 +100,9 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
 
-            // Popular Categories Section (Aligned with Search Bar)
+            // Popular Categories
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30.0),
               child: Column(
@@ -119,10 +113,10 @@ class MyHomePage extends StatelessWidget {
                       Text(
                         "POPULAR",
                         style: TextStyle(
-                          fontFamily: 'Poppins', // Ensure the Poppins font is added
-                          fontWeight: FontWeight.w600, // Semi-bold
-                          fontSize: screenWidth * 0.06, // Responsive font size
-                          color: Colors.orange, // Orange color for POPULAR
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600,
+                          fontSize: screenWidth * 0.06,
+                          color: Colors.orange,
                         ),
                       ),
                       const SizedBox(width: 4),
@@ -131,8 +125,8 @@ class MyHomePage extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w600,
-                          fontSize: screenWidth * 0.06, // Responsive font size
-                          color: Colors.black, // Black color for Categories
+                          fontSize: screenWidth * 0.06,
+                          color: Colors.black,
                         ),
                       ),
                     ],
@@ -140,77 +134,167 @@ class MyHomePage extends StatelessWidget {
                   const SizedBox(height: 4),
                   Container(
                     height: 3,
-                    width: screenWidth * 0.7, // Responsive line length
-                    color: Colors.orange, // Orange color for the line
+                    width: screenWidth * 0.7,
+                    color: Colors.orange,
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: screenHeight * 0.18,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                      itemCount: 4,
+                      itemBuilder: (context, index) {
+                        final categories = [
+                          {'image': 'assets/pictures/indonesian_circle.png', 'label': 'Indonesian'},
+                          {'image': 'assets/pictures/japanese_circle.png', 'label': 'Japanese'},
+                          {'image': 'assets/pictures/italian_circle.png', 'label': 'Italian'},
+                          {'image': 'assets/pictures/chinese_circle.png', 'label': 'Chinese'}
+                        ];
+                        return CategoryItem(
+                          imagePath: categories[index]['image']!,
+                          label: categories[index]['label']!,
+                          screenWidth: screenWidth,
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 20),
 
-            // Scrollable Categories Section
+            // "Don't know what to get?" Section
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.18, // Adjust height dynamically
-                child: Center(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal, // Enable horizontal scrolling
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Equal spacing between items
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Don't know what to get?",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600,
+                      fontSize: screenWidth * 0.06,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontFamily: 'InriaSerif',
+                        fontWeight: FontWeight.w600,
+                        fontSize: screenWidth * 0.030,
+                        color: Colors.black,
+                      ),
                       children: [
-                        // Indonesian Category
-                        CategoryItem(
-                          imagePath: 'assets/pictures/indonesian_circle.png',
-                          label: "Indonesian",
-                          screenWidth: MediaQuery.of(context).size.width,
+                        const TextSpan(text: "Here are some "),
+                        TextSpan(
+                          text: "recommendations",
+                          style: TextStyle(color: Colors.orange, fontWeight: FontWeight.w500),
                         ),
-                        // Japanese Category
-                        CategoryItem(
-                          imagePath: 'assets/pictures/japanese_circle.png',
-                          label: "Japanese",
-                          screenWidth: MediaQuery.of(context).size.width,
-                        ),
-                        // Italian Category
-                        CategoryItem(
-                          imagePath: 'assets/pictures/italian_circle.png',
-                          label: "Italian",
-                          screenWidth: MediaQuery.of(context).size.width,
-                        ),
-                        // Chinese Category
-                        CategoryItem(
-                          imagePath: 'assets/pictures/chinese_circle.png',
-                          label: "Chinese",
-                          screenWidth: MediaQuery.of(context).size.width,
-                        ),
+                        const TextSpan(text: " from our local pacil coder's"),
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
             ),
+            const SizedBox(height: 30),
+
+            // Recommendations Cards
+            SizedBox(
+              height: 230,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                children: [
+                  RecommendationCard(
+                    imagePath: 'assets/pictures/tomoro.png',
+                    recommendationText: "chi's recommendation",
+                    title: "Caramel Machiato",
+                    subTitle: "TOMORO Coffee",
+                    faculty: "FISIP UI",
+                    price: "23k",
+                    cardWidth: cardWidth,
+                  ),
+                  const SizedBox(width: 16),
+                  RecommendationCard(
+                    imagePath: 'assets/pictures/bebek_madura.png',
+                    recommendationText: "ari's recommendation",
+                    title: "Bebek Madura",
+                    subTitle: "Kantin FIB",
+                    faculty: "FIB UI",
+                    price: "20k",
+                    cardWidth: cardWidth,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Hits under 15K section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // "Hits under 15K!" Section Title
+                  Row(
+                    children: [
+                      Text(
+                        "Hits under 15K!",
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600,
+                          fontSize: MediaQuery.of(context).size.width * 0.06, // Same size as "Don't know what to get?"
+                        ),
+                      ),
+                      const SizedBox(width: 8), // Spacing between text and stars
+                      Image.asset(
+                        'assets/pictures/stars.png', // Path to the stars asset
+                        width: 24, // Adjust as necessary
+                        height: 24,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+
+                  // Underline
+                  Container(
+                    height: 3,
+                    width: MediaQuery.of(context).size.width * 0.7, 
+                    color: Colors.orange, // Same color as the other line
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
 
             // Content Section (GridView)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: GridView.count(
-                primary: true,
+                primary: false,
+                shrinkWrap: true,
                 padding: const EdgeInsets.all(10),
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 crossAxisCount: 3,
-                shrinkWrap: true,
                 children: items.map((ItemHomepage item) {
                   return ItemCard(item);
                 }).toList(),
               ),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
 }
+
 
 class ItemHomepage {
   final String name;
@@ -334,6 +418,121 @@ class _CategoryItemState extends State<CategoryItem> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class RecommendationCard extends StatelessWidget {
+  final String imagePath;
+  final String recommendationText;
+  final String title;
+  final String subTitle;
+  final String faculty;
+  final String price;
+  final double cardWidth;
+
+  const RecommendationCard({
+    Key? key,
+    required this.imagePath,
+    required this.recommendationText,
+    required this.title,
+    required this.subTitle,
+    required this.faculty,
+    required this.price,
+    required this.cardWidth,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: cardWidth,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2), // Make the shadow more prominent
+            blurRadius: 10, // Adjusted for a stronger effect
+            offset: const Offset(0, 5), // Slightly larger offset
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(15),
+              bottomLeft: Radius.circular(15),
+            ),
+            child: Image.asset(
+              imagePath,
+              width: cardWidth * 0.4,
+              height: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    recommendationText,
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Colors.pink,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subTitle,
+                    style: const TextStyle(
+                      fontFamily: 'InriaSerif-Regular',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    faculty,
+                    style: const TextStyle(
+                      fontFamily: 'InriaSerif-BoldItalic',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                      color: Colors.orange,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    price,
+                    style: const TextStyle(
+                      fontFamily: 'InriaSerif-Bold',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
