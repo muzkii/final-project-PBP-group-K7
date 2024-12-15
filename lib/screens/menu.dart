@@ -208,36 +208,40 @@ class MyHomePage extends StatelessWidget {
             ),
             const SizedBox(height: 35),
 
-            // reccomendation
             SizedBox(
-              height: screenHeight * 0.25, // Adjust height dynamically
+              height: 210, // Fixed height for recommendations section
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 children: [
-                  RecommendationCard(
-                    imagePath: 'assets/pictures/tomoro.png',
-                    recommendationText: "chi's recommendation",
-                    title: "Caramel Machiato",
-                    subTitle: "TOMORO Coffee",
-                    faculty: "FISIP UI",
-                    price: "23k",
-                    cardWidth: screenWidth * 0.6, // Width adjusted dynamically
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: RecommendationCard(
+                      imagePath: 'assets/pictures/tomoro.png',
+                      recommendationText: "chi's recommendation",
+                      title: "Caramel Machiato",
+                      subTitle: "TOMORO Coffee",
+                      faculty: "FISIP UI",
+                      price: "23k",
+                      cardWidth: cardWidth * 0.8,
+                    ),
                   ),
-                  SizedBox(width: screenWidth * 0.04),
-                  RecommendationCard(
-                    imagePath: 'assets/pictures/bebek_madura.png',
-                    recommendationText: "ari's recommendation",
-                    title: "Bebek Madura",
-                    subTitle: "Kantin FIB",
-                    faculty: "FIB UI",
-                    price: "20k",
-                    cardWidth: screenWidth * 0.6,
+                  const SizedBox(width: 16),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: RecommendationCard(
+                      imagePath: 'assets/pictures/bebek_madura.png',
+                      recommendationText: "ari's recommendation",
+                      title: "Bebek Madura",
+                      subTitle: "Kantin FIB",
+                      faculty: "FIB UI",
+                      price: "20k",
+                      cardWidth: cardWidth * 0.8,
+                    ),
                   ),
                 ],
               ),
             ),
-
             const SizedBox(height: 10),
 
             // Hits under 15K Section
@@ -699,6 +703,3 @@ Widget _buildHitsUnder15kCard({
     ),
   );
 }
-
-
-
