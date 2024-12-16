@@ -67,6 +67,7 @@ flutter:
     - assets/pictures/tomoro.png
     - assets/pictures/arrow.png
     - assets/pictures/stars.png
+    - assets/pictures/logo.png
 
   fonts:
     - family: Poppins
