@@ -299,7 +299,6 @@ class MyHomePage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-
                   // Scrollable Cards
                   Expanded( // Use Expanded to allow ListView to take available space
                     child: ListView(
