@@ -70,7 +70,7 @@ flutter:
     - assets/pictures/nasi_uduk.png
     - assets/pictures/price_circle13.png
     - assets/pictures/price_circle14.png
-
+    - assets/pictures/logo.png
 
   fonts:
     - family: Poppins
