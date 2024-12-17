@@ -67,6 +67,9 @@ flutter:
     - assets/pictures/tomoro.png
     - assets/pictures/arrow.png
     - assets/pictures/stars.png
+    - assets/pictures/nasi_uduk.png
+    - assets/pictures/price_circle13.png
+    - assets/pictures/price_circle14.png
     - assets/pictures/logo.png
 
   fonts:
