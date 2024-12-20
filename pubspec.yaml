@@ -71,6 +71,8 @@ flutter:
     - assets/pictures/price_circle13.png
     - assets/pictures/price_circle14.png
     - assets/pictures/logo.png
+    - assets/logo.png
+    - assets/background-landingpage.png
 
   fonts:
     - family: Poppins

@@ -18,8 +18,8 @@ class LoginApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.deepPurple,
-        ).copyWith(secondary: Colors.deepPurple[400]),
+          primarySwatch: Colors.deepOrange,
+        ).copyWith(secondary: Colors.deepOrange[400]),
       ),
       home: const LoginPage(),
     );
@@ -42,8 +42,11 @@ class _LoginPageState extends State<LoginPage> {
     final request = context.watch<CookieRequest>();
 
     return Scaffold(
+      backgroundColor: Color(0xFFFFF5EA), // Set the background color
       appBar: AppBar(
         title: const Text('Login'),
+        backgroundColor: Color(0xFFFFF5EA), // Optional: set AppBar background to match
+        elevation: 0, // Remove shadow to blend AppBar with background
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -73,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                               style: TextStyle(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.w500,
+                                fontFamily: 'InriaSerif', // Set InriaSerif font here
                               ),
                             ),
                           ],
@@ -80,10 +84,12 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 30.0),
                   TextField(
                     controller: _usernameController,
+                    cursorColor: Colors.orange,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white, // Background color
                       labelText: 'Username',
+                      labelStyle: TextStyle(color: Colors.grey),
                       prefixIcon: Icon(Icons.person),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30.0), // Rounded corners
@@ -94,11 +100,13 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 12.0),
                   TextField(
                     controller: _passwordController,
+                    cursorColor: Colors.orange,
                     obscureText: true,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
                       labelText: 'Password',
+                      labelStyle: TextStyle(color: Colors.grey),
                       prefixIcon: Icon(Icons.lock),
                       suffixIcon: IconButton(
                         icon: Icon(Icons.visibility_off),
@@ -178,7 +186,11 @@ class _LoginPageState extends State<LoginPage> {
                         children: const [
                           Text(
                             'Explore the app',
-                            style: TextStyle(fontSize: 16.0),
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontFamily: 'Poppins', // Set Poppins font here
+                              fontWeight: FontWeight.w600, // Optional: Adjust font weight if needed
+                            ),
                           ),
                           SizedBox(width: 8.0),
                           Icon(Icons.arrow_right_alt),
@@ -197,8 +209,9 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text(
                       'Don\'t have an account? Register',
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Colors.orange, // Set consistent orange color
                         fontSize: 16.0,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
