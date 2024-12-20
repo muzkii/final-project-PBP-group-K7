@@ -55,7 +55,7 @@ class MyHomePage extends StatelessWidget {
                 Image.asset(
                   'assets/pictures/heading1_mieayam.png',
                   width: double.infinity,
-                  height: screenHeight * 0.25,
+                  height: screenHeight * 0.35,
                   fit: BoxFit.cover,
                 ),
               ],
@@ -138,23 +138,28 @@ class MyHomePage extends StatelessWidget {
                     color: Colors.orange,
                   ),
                   const SizedBox(height: 20),
+
+                  // Scrollable Categories
                   SizedBox(
-                    height: screenHeight * 0.18,
+                    height: screenHeight * 0.18, // Adjusted height for circular categories
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
                       itemCount: 4,
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0), // Reduced padding
                       itemBuilder: (context, index) {
                         final categories = [
                           {'image': 'assets/pictures/indonesian_circle.png', 'label': 'Indonesian'},
                           {'image': 'assets/pictures/japanese_circle.png', 'label': 'Japanese'},
                           {'image': 'assets/pictures/italian_circle.png', 'label': 'Italian'},
-                          {'image': 'assets/pictures/chinese_circle.png', 'label': 'Chinese'}
+                          {'image': 'assets/pictures/chinese_circle.png', 'label': 'Chinese'},
                         ];
-                        return CategoryItem(
-                          imagePath: categories[index]['image']!,
-                          label: categories[index]['label']!,
-                          screenWidth: screenWidth,
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 16.0), // Spacing between items
+                          child: CategoryItem(
+                            imagePath: categories[index]['image']!,
+                            label: categories[index]['label']!,
+                            screenWidth: screenWidth,
+                          ),
                         );
                       },
                     ),
@@ -162,6 +167,7 @@ class MyHomePage extends StatelessWidget {
                 ],
               ),
             ),
+
             const SizedBox(height: 20),
 
             // "Don't know what to get?" Section
@@ -200,77 +206,147 @@ class MyHomePage extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 35),
 
-            // Recommendations Cards
             SizedBox(
-              height: 230,
+              height: 210, // Fixed height for recommendations section
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 children: [
-                  RecommendationCard(
-                    imagePath: 'assets/pictures/tomoro.png',
-                    recommendationText: "chi's recommendation",
-                    title: "Caramel Machiato",
-                    subTitle: "TOMORO Coffee",
-                    faculty: "FISIP UI",
-                    price: "23k",
-                    cardWidth: cardWidth,
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: RecommendationCard(
+                      imagePath: 'assets/pictures/tomoro.png',
+                      recommendationText: "chi's recommendation",
+                      title: "Caramel Machiato",
+                      subTitle: "TOMORO Coffee",
+                      faculty: "FISIP UI",
+                      price: "23k",
+                      cardWidth: cardWidth * 0.8,
+                    ),
                   ),
                   const SizedBox(width: 16),
-                  RecommendationCard(
-                    imagePath: 'assets/pictures/bebek_madura.png',
-                    recommendationText: "ari's recommendation",
-                    title: "Bebek Madura",
-                    subTitle: "Kantin FIB",
-                    faculty: "FIB UI",
-                    price: "20k",
-                    cardWidth: cardWidth,
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: RecommendationCard(
+                      imagePath: 'assets/pictures/bebek_madura.png',
+                      recommendationText: "ari's recommendation",
+                      title: "Bebek Madura",
+                      subTitle: "Kantin FIB",
+                      faculty: "FIB UI",
+                      price: "20k",
+                      cardWidth: cardWidth * 0.8,
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
 
-            // Hits under 15K section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            // Hits under 15K Section
+            Container(
+              width: double.infinity,
+              height: 380, // Height of container
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white, // Start with white
+                    Colors.red[100] ?? Colors.red, // Fades into light red
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // "Hits under 15K!" Section Title
-                  Row(
-                    children: [
-                      Text(
-                        "Hits under 15K!",
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                          fontSize: MediaQuery.of(context).size.width * 0.06, // Same size as "Don't know what to get?"
+                  // Title and Stars
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              "Hits under 15K!",
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w600,
+                                fontSize: MediaQuery.of(context).size.width * 0.06,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Image.asset(
+                                'assets/pictures/stars.png', // Path to the stars asset
+                                width: 60,
+                                height: 60,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(width: 8), // Spacing between text and stars
-                      Image.asset(
-                        'assets/pictures/stars.png', // Path to the stars asset
-                        width: 24, // Adjust as necessary
-                        height: 24,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-
-                  // Underline
-                  Container(
-                    height: 3,
-                    width: MediaQuery.of(context).size.width * 0.7, 
-                    color: Colors.orange, // Same color as the other line
+                        const SizedBox(height: 15),
+                        Container(
+                          height: 3,
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          color: Colors.orange,
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 20),
+                  // Scrollable Cards
+                  Expanded( // Use Expanded to allow ListView to take available space
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      children: [
+                        // First Card
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0, bottom: 15.0),
+                          child: _buildHitsUnder15kCard(
+                            imagePath: 'assets/pictures/nasi_uduk.png',
+                            priceCirclePath: 'assets/pictures/price_circle13.png',
+                            department: "FISIP UI",
+                            foodTitle: "Nasi Uduk",
+                            stall: "Siomay Ikan Tenggiri",
+                            cardWidth: MediaQuery.of(context).size.width * 0.4,
+                          ),
+                        ),
+                        // Second Card
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0, bottom: 15.0),
+                          child: _buildHitsUnder15kCard(
+                            imagePath: 'assets/pictures/nasi_uduk.png',
+                            priceCirclePath: 'assets/pictures/price_circle14.png',
+                            department: "FISIP UI",
+                            foodTitle: "Nasi Uduk",
+                            stall: "Siomay Ikan Tenggiri",
+                            cardWidth: MediaQuery.of(context).size.width * 0.4,
+                          ),
+                        ),
+                        // third card
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0, bottom: 15.0),
+                          child: _buildHitsUnder15kCard(
+                            imagePath: 'assets/pictures/nasi_uduk.png',
+                            priceCirclePath: 'assets/pictures/price_circle14.png',
+                            department: "FISIP UI",
+                            foodTitle: "Nasi Uduk",
+                            stall: "Siomay Ikan Tenggiri",
+                            cardWidth: MediaQuery.of(context).size.width * 0.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
 
             // Content Section (GridView)
             Padding(
@@ -294,7 +370,6 @@ class MyHomePage extends StatelessWidget {
     );
   }
 }
-
 
 class ItemHomepage {
   final String name;
@@ -484,7 +559,7 @@ class RecommendationCard extends StatelessWidget {
                     style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w500,
-                      fontSize: 14,
+                      fontSize: 10,
                       color: Colors.pink,
                     ),
                   ),
@@ -494,7 +569,7 @@ class RecommendationCard extends StatelessWidget {
                     style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.bold,
-                      fontSize: 24,
+                      fontSize: 18,
                       color: Colors.black,
                     ),
                   ),
@@ -504,7 +579,7 @@ class RecommendationCard extends StatelessWidget {
                     style: const TextStyle(
                       fontFamily: 'InriaSerif-Regular',
                       fontWeight: FontWeight.w500,
-                      fontSize: 14,
+                      fontSize: 12,
                       color: Colors.black,
                     ),
                   ),
@@ -514,7 +589,7 @@ class RecommendationCard extends StatelessWidget {
                     style: const TextStyle(
                       fontFamily: 'InriaSerif-BoldItalic',
                       fontWeight: FontWeight.w600,
-                      fontSize: 15,
+                      fontSize: 13,
                       color: Colors.orange,
                     ),
                   ),
@@ -524,7 +599,7 @@ class RecommendationCard extends StatelessWidget {
                     style: const TextStyle(
                       fontFamily: 'InriaSerif-Bold',
                       fontWeight: FontWeight.w600,
-                      fontSize: 20,
+                      fontSize: 18,
                       color: Colors.black,
                     ),
                   ),
@@ -538,5 +613,92 @@ class RecommendationCard extends StatelessWidget {
   }
 }
 
-
-
+Widget _buildHitsUnder15kCard({
+  required String imagePath,
+  required String priceCirclePath,
+  required String department,
+  required String foodTitle,
+  required String stall,
+  required double cardWidth,
+}) {
+  return Container(
+    width: cardWidth,
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20), // Increased border radius
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 10,
+          offset: const Offset(0, 5),
+        ),
+      ],
+    ),
+    child: Column(
+      children: [
+        // Food Image Section
+        Stack(
+          alignment: Alignment.center, // Center-align the price circle
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+              child: Image.asset(
+                imagePath,
+                width: double.infinity,
+                height: 120,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Image.asset(
+              priceCirclePath,
+              width: 90,
+              height: 90,
+            ),
+          ],
+        ),
+        const SizedBox(height: 10), // Space between image and text
+        // Text Content Section
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                department,
+                style: const TextStyle(
+                  fontFamily: 'InriaSerif',
+                  fontStyle: FontStyle.italic,
+                  fontSize: 14,
+                  color: Colors.orange,
+                ),
+              ),
+              const SizedBox(height: 1),
+              Text(
+                foodTitle,
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 1),
+              Text(
+                stall,
+                style: const TextStyle(
+                  fontFamily: 'InriaSerif',
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10), // Padding at the bottom
+      ],
+    ),
+  );
+}
