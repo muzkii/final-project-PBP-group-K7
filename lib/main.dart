@@ -5,6 +5,10 @@ import 'package:provider/provider.dart';
 import 'screens/login.dart';
 import 'screens/landingpage.dart';
 import 'screens/faculty_canteen_page.dart';
+import 'screens/product_page.dart';
+import 'screens/faculty_form.dart';
+import 'screens/canteen_form.dart';
+import 'screens/stall_form.dart';
 
 void main() {
   runApp(const MyApp());
