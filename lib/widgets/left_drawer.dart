@@ -3,6 +3,9 @@ import '../screens/menu.dart';
 import 'package:biteatui/forms/product_form.dart';
 import '../screens/stall_page.dart';
 import '../screens/favorites_page.dart';
+import 'package:biteatui/forms/canteen_form.dart';
+import 'package:biteatui/forms/faculty_form.dart';
+import 'package:biteatui/forms/stall_form.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -56,7 +59,7 @@ class LeftDrawer extends StatelessWidget {
             title: const Text('Add Product'),
             // Redirection part to ProductFormPage
             onTap: () {
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ProductFormPage()),
               );
@@ -86,6 +89,36 @@ class LeftDrawer extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => const FavoritesPage(),
                 ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add_business),
+            title: const Text('Add Canteen'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CanteenForm()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.school),
+            title: const Text('Add Faculty'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const FacultyForm()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.storefront),
+            title: const Text('Add Stall'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const StallForm()),
               );
             },
           ),

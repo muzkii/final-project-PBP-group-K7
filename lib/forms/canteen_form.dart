@@ -1,7 +1,9 @@
+// filepath: /C:/Users/Andriyo Averill/Documents/Kuliah/SEM 3/PBP/Flutter/final-project-pbp/lib/forms/canteen_form.dart
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:biteatui/models/all_entry.dart';
+import 'dart:convert';
 
 class CanteenForm extends StatefulWidget {
   const CanteenForm({Key? key}) : super(key: key);
@@ -11,6 +13,7 @@ class CanteenForm extends StatefulWidget {
 }
 
 class _CanteenFormState extends State<CanteenForm> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController canteenNameController = TextEditingController();
   final TextEditingController canteenPriceRangeController = TextEditingController();
   final TextEditingController canteenImageUrlController = TextEditingController();
@@ -27,7 +30,7 @@ class _CanteenFormState extends State<CanteenForm> {
   Future<void> fetchFaculties() async {
     try {
       final request = context.read<CookieRequest>();
-      final response = await request.get('http://localhost:8000/show_json/');
+      final response = await request.get('http://10.0.2.2:8000/show_json/');
 
       setState(() {
         faculties = (response['faculties'] as List)
@@ -50,57 +53,84 @@ class _CanteenFormState extends State<CanteenForm> {
         child: Container(
           width: screenWidth,
           padding: EdgeInsets.symmetric(vertical: screenHeight * 0.03),
-          child: Column(
-            children: [
-              // Header Logo and Text
-              buildHeader(screenWidth, screenHeight),
-              SizedBox(
-                width: screenWidth * 0.9,
-                child: Text(
-                  'Add Canteen',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: const Color(0xFF1E1E1E),
-                    fontSize: screenWidth * 0.08,
-                    fontFamily: 'Inria Serif',
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 1.5,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                // Header Logo and Text
+                buildHeader(screenWidth, screenHeight),
+                SizedBox(
+                  width: screenWidth * 0.9,
+                  child: Text(
+                    'Add Canteen',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: const Color(0xFF1E1E1E),
+                      fontSize: screenWidth * 0.08,
+                      fontFamily: 'Inria Serif',
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 1.5,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              // Canteen Information Card
-              buildCanteenInformationCard(screenWidth, screenHeight),
-              SizedBox(height: screenHeight * 0.05),
-              // Add Canteen Button
-              GestureDetector(
-                onTap: () {
-                  print('Canteen Name: ${canteenNameController.text}');
-                  print('Canteen’s Price Range: ${canteenPriceRangeController.text}');
-                  print('From Faculty: ${selectedFaculty?.fields.name}');
-                  print('Canteen Image URL: ${canteenImageUrlController.text}');
-                },
-                child: Container(
-                  width: screenWidth * 0.4,
-                  height: screenHeight * 0.065,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF79022),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Add Canteen',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: screenWidth * 0.05,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w700,
+                SizedBox(height: screenHeight * 0.02),
+                // Canteen Information Card
+                buildCanteenInformationCard(screenWidth, screenHeight),
+                SizedBox(height: screenHeight * 0.05),
+                // Add Canteen Button
+                GestureDetector(
+                  onTap: () async {
+                    final request = context.read<CookieRequest>();
+                    if (_formKey.currentState!.validate()) {
+                      final response = await request.postJson(
+                        "http://10.0.2.2:8000/create-canteen-flutter/",
+                        jsonEncode(<String, String>{
+                          'name': canteenNameController.text,
+                          'faculty': selectedFaculty?.fields.name ?? '',
+                          'image': canteenImageUrlController.text,
+                          'price': canteenPriceRangeController.text,
+                        }),
+                      );
+                      if (context.mounted) {
+                        if (response['status'] == 'success') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("New canteen has been added successfully!"),
+                            ),
+                          );
+                          Navigator.pop(context);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Something went wrong, please try again. Error: ${response['message']}"),
+                            ),
+                          );
+                        }
+                      }
+                    }
+                  },
+                  child: Container(
+                    width: screenWidth * 0.4,
+                    height: screenHeight * 0.065,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF79022),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Add Canteen',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screenWidth * 0.05,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -236,13 +266,13 @@ class _CanteenFormState extends State<CanteenForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 buildInputLabel('Canteen Name', screenWidth),
-                buildInputField(canteenNameController, 'KANMER', screenWidth),
+                buildInputField(canteenNameController, 'KANMER', screenWidth, 'Canteen Name'),
                 buildInputLabel('Canteen’s Price Range', screenWidth),
-                buildInputField(canteenPriceRangeController, 'Rp10.000-Rp30.000/pax', screenWidth),
+                buildInputField(canteenPriceRangeController, 'Rp10.000-Rp30.000/pax', screenWidth, 'Canteen’s Price Range'),
                 buildInputLabel('From Faculty', screenWidth),
                 buildFacultyDropdown(screenWidth),
                 buildInputLabel('Canteen Image URL', screenWidth),
-                buildInputField(canteenImageUrlController, 'https://photo.com', screenWidth),
+                buildInputField(canteenImageUrlController, 'https://photo.com', screenWidth, 'Canteen Image URL'),
               ],
             ),
           ),
@@ -266,10 +296,10 @@ class _CanteenFormState extends State<CanteenForm> {
     );
   }
 
-  Widget buildInputField(TextEditingController controller, String placeholder, double screenWidth) {
+  Widget buildInputField(TextEditingController controller, String placeholder, double screenWidth, String label) {
     return Padding(
       padding: EdgeInsets.only(bottom: screenWidth * 0.04),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
           hintText: placeholder,
@@ -291,6 +321,12 @@ class _CanteenFormState extends State<CanteenForm> {
           fontFamily: 'Poppins',
           fontWeight: FontWeight.w700,
         ),
+        validator: (String? value) {
+          if (value == null || value.isEmpty) {
+            return "$label cannot be empty!";
+          }
+          return null;
+        },
       ),
     );
   }
