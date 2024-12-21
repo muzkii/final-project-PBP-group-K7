@@ -40,6 +40,13 @@ jobs:
         env:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: flutter build apk --split-per-abi
+      
+      - name: Upload R8 Missing Rules
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: missing_rules
+          path: build/app/outputs/mapping/release/missing_rules.txt
 
       - name: Pre-release APK by uploading it to Artifacts
         uses: actions/upload-artifact@v3
