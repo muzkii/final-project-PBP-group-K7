@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/left_drawer.dart';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
 
 class MyHomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -309,6 +311,7 @@ class MyHomePage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(right: 16.0, bottom: 15.0),
                           child: _buildHitsUnder15kCard(
+                            context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
                             priceCirclePath: 'assets/pictures/price_circle13.png',
                             department: "FISIP UI",
@@ -321,6 +324,7 @@ class MyHomePage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(right: 16.0, bottom: 15.0),
                           child: _buildHitsUnder15kCard(
+                            context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
                             priceCirclePath: 'assets/pictures/price_circle14.png',
                             department: "FISIP UI",
@@ -333,6 +337,7 @@ class MyHomePage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(right: 16.0, bottom: 15.0),
                           child: _buildHitsUnder15kCard(
+                            context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
                             priceCirclePath: 'assets/pictures/price_circle14.png',
                             department: "FISIP UI",
@@ -506,6 +511,7 @@ class RecommendationCard extends StatelessWidget {
   final String faculty;
   final String price;
   final double cardWidth;
+  final int? productId; // Add this
 
   const RecommendationCard({
     Key? key,
@@ -516,104 +522,147 @@ class RecommendationCard extends StatelessWidget {
     required this.faculty,
     required this.price,
     required this.cardWidth,
+    this.productId, // Add this
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: cardWidth,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2), // Make the shadow more prominent
-            blurRadius: 10, // Adjusted for a stronger effect
-            offset: const Offset(0, 5), // Slightly larger offset
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(15),
-              bottomLeft: Radius.circular(15),
+    // Get screen width to scale text
+    final screenWidth = MediaQuery.of(context).size.width;
+    
+    // Adjust these multipliers as needed for a good look
+    final recTextSize = screenWidth * 0.025;   // ~10px on a 400px wide screen
+    final titleTextSize = screenWidth * 0.045; // ~18px on a 400px wide screen
+    final subTitleTextSize = screenWidth * 0.03;
+    final facultyTextSize = screenWidth * 0.032;
+    final priceTextSize = screenWidth * 0.045;
+
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (BuildContext ctx) {
+            return ProductQuickView(
+              imagePath: imagePath,
+              title: title,
+              subTitle: subTitle,
+              faculty: faculty,
+              price: price,
+              productId: productId ?? -1, // Add this line
+            );
+          },
+        );
+      },
+      child: Container(
+        width: cardWidth,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
             ),
-            child: Image.asset(
-              imagePath,
-              width: cardWidth * 0.4,
-              height: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    recommendationText,
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 10,
-                      color: Colors.pink,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subTitle,
-                    style: const TextStyle(
-                      fontFamily: 'InriaSerif-Regular',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    faculty,
-                    style: const TextStyle(
-                      fontFamily: 'InriaSerif-BoldItalic',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
-                      color: Colors.orange,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    price,
-                    style: const TextStyle(
-                      fontFamily: 'InriaSerif-Bold',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+          ],
+        ),
+        child: Row(
+          children: [
+            // Left image
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(15),
+                bottomLeft: Radius.circular(15),
+              ),
+              child: Image.asset(
+                imagePath,
+                width: cardWidth * 0.4,
+                height: double.infinity,
+                fit: BoxFit.cover,
               ),
             ),
-          ),
-        ],
+            // Text content
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      recommendationText,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w500,
+                        fontSize: recTextSize,
+                        color: Colors.pink,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.bold,
+                        fontSize: titleTextSize,
+                        color: Colors.black,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subTitle,
+                      style: TextStyle(
+                        fontFamily: 'InriaSerif-Regular',
+                        fontWeight: FontWeight.w500,
+                        fontSize: subTitleTextSize,
+                        color: Colors.black,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      faculty,
+                      style: TextStyle(
+                        fontFamily: 'InriaSerif-BoldItalic',
+                        fontWeight: FontWeight.w600,
+                        fontSize: facultyTextSize,
+                        color: Colors.orange,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      price,
+                      style: TextStyle(
+                        fontFamily: 'InriaSerif-Bold',
+                        fontWeight: FontWeight.w600,
+                        fontSize: priceTextSize,
+                        color: Colors.black,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 Widget _buildHitsUnder15kCard({
+  required BuildContext context,
   required String imagePath,
   required String priceCirclePath,
   required String department,
@@ -621,6 +670,13 @@ Widget _buildHitsUnder15kCard({
   required String stall,
   required double cardWidth,
 }) {
+  final screenWidth = MediaQuery.of(context).size.width;
+
+  // Adjust these multipliers as needed for a good look
+  final departmentFontSize = screenWidth * 0.035;
+  final foodTitleFontSize = screenWidth * 0.045;
+  final stallFontSize = screenWidth * 0.035;
+
   return Container(
     width: cardWidth,
     decoration: BoxDecoration(
@@ -660,6 +716,7 @@ Widget _buildHitsUnder15kCard({
           ],
         ),
         const SizedBox(height: 10), // Space between image and text
+
         // Text Content Section
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -668,31 +725,37 @@ Widget _buildHitsUnder15kCard({
             children: [
               Text(
                 department,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'InriaSerif',
                   fontStyle: FontStyle.italic,
-                  fontSize: 14,
+                  fontSize: departmentFontSize,
                   color: Colors.orange,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 1),
               Text(
                 foodTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                  fontSize: foodTitleFontSize,
                   color: Colors.black,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 1),
               Text(
                 stall,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'InriaSerif',
-                  fontSize: 14,
+                  fontSize: stallFontSize,
                   color: Colors.black,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
@@ -701,4 +764,204 @@ Widget _buildHitsUnder15kCard({
       ],
     ),
   );
+}
+
+class ProductQuickView extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final String subTitle;
+  final String faculty;
+  final String price;
+  final int productId; // Add this
+
+  const ProductQuickView({
+    Key? key,
+    required this.imagePath,
+    required this.title,
+    required this.subTitle,
+    required this.faculty,
+    required this.price,
+    required this.productId, // Add this
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          Image.asset(
+            imagePath,
+            height: 200,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            subTitle,
+            style: const TextStyle(fontSize: 18),
+          ),
+          Text(
+            faculty,
+            style: const TextStyle(fontSize: 16),
+          ),
+          Text(
+            price,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.favorite_border),
+            label: const Text('Add to Favorites'),
+            onPressed: () async {
+              final request = context.read<CookieRequest>();
+              try {
+                await request.post(
+                  'http://localhost:8000/favorite/${productId}/',
+                  {},
+                );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Added to favorites!')),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Failed to add to favorites')),
+                );
+              }
+            },
+          ),
+          TextButton(
+            child: const Text('View Full Details'),
+            onPressed: () {
+              Navigator.pop(context); // Close bottom sheet
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductDetailPage(
+                    imagePath: imagePath,
+                    title: title,
+                    subTitle: subTitle,
+                    faculty: faculty,
+                    price: price,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Add this class in menu.dart after your other widget classes
+class ProductDetailPage extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final String subTitle;
+  final String faculty;
+  final String price;
+
+  final int? productId; // Make it optional
+
+  const ProductDetailPage({
+    Key? key,
+    required this.imagePath,
+    required this.title,
+    required this.subTitle,
+    required this.faculty,
+    required this.price,
+    this.productId, // Now optional
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.asset(
+              imagePath,
+              width: double.infinity,
+              height: 250,
+              fit: BoxFit.cover,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    subTitle,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Location: $faculty",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Price: $price",
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.orange,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      // Add to favorites functionality
+                    },
+                    icon: const Icon(Icons.favorite_border),
+                    label: const Text('Add to Favorites'),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

@@ -1,37 +1,31 @@
 // To parse this JSON data, do
 //
-//     final allEntries = allEntriesFromJson(jsonString);
+//     final canteenWebsite = canteenWebsiteFromJson(jsonString);
 
 import 'dart:convert';
 
-AllEntries allEntriesFromJson(String str) => AllEntries.fromJson(json.decode(str));
+CanteenWebsite canteenWebsiteFromJson(String str) => CanteenWebsite.fromJson(json.decode(str));
 
-String allEntriesToJson(AllEntries data) => json.encode(data.toJson());
+String canteenWebsiteToJson(CanteenWebsite data) => json.encode(data.toJson());
 
-class AllEntries {
+class CanteenWebsite {
     List<Faculty> faculties;
     List<Canteen> canteens;
     List<Stall> stalls;
     List<Product> products;
-    List<Review> reviews;
-    List<FavoriteProduct> favoriteProducts;
 
-    AllEntries({
+    CanteenWebsite({
         required this.faculties,
         required this.canteens,
         required this.stalls,
         required this.products,
-        required this.reviews,
-        required this.favoriteProducts,
     });
 
-    factory AllEntries.fromJson(Map<String, dynamic> json) => AllEntries(
+    factory CanteenWebsite.fromJson(Map<String, dynamic> json) => CanteenWebsite(
         faculties: List<Faculty>.from(json["faculties"].map((x) => Faculty.fromJson(x))),
         canteens: List<Canteen>.from(json["canteens"].map((x) => Canteen.fromJson(x))),
         stalls: List<Stall>.from(json["stalls"].map((x) => Stall.fromJson(x))),
         products: List<Product>.from(json["products"].map((x) => Product.fromJson(x))),
-        reviews: List<Review>.from(json["reviews"].map((x) => Review.fromJson(x))),
-        favoriteProducts: List<FavoriteProduct>.from(json["favorite_products"].map((x) => FavoriteProduct.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
@@ -39,8 +33,6 @@ class AllEntries {
         "canteens": List<dynamic>.from(canteens.map((x) => x.toJson())),
         "stalls": List<dynamic>.from(stalls.map((x) => x.toJson())),
         "products": List<dynamic>.from(products.map((x) => x.toJson())),
-        "reviews": List<dynamic>.from(reviews.map((x) => x.toJson())),
-        "favorite_products": List<dynamic>.from(favoriteProducts.map((x) => x.toJson())),
     };
 }
 
@@ -148,50 +140,6 @@ class FacultyFields {
     };
 }
 
-class FavoriteProduct {
-    String model;
-    int pk;
-    FavoriteProductFields fields;
-
-    FavoriteProduct({
-        required this.model,
-        required this.pk,
-        required this.fields,
-    });
-
-    factory FavoriteProduct.fromJson(Map<String, dynamic> json) => FavoriteProduct(
-        model: json["model"],
-        pk: json["pk"],
-        fields: FavoriteProductFields.fromJson(json["fields"]),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "model": model,
-        "pk": pk,
-        "fields": fields.toJson(),
-    };
-}
-
-class FavoriteProductFields {
-    int user;
-    int product;
-
-    FavoriteProductFields({
-        required this.user,
-        required this.product,
-    });
-
-    factory FavoriteProductFields.fromJson(Map<String, dynamic> json) => FavoriteProductFields(
-        user: json["user"],
-        product: json["product"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "user": user,
-        "product": product,
-    };
-}
-
 class Product {
     ProductModel model;
     int pk;
@@ -247,62 +195,6 @@ enum ProductModel {
 final productModelValues = EnumValues({
     "main.product": ProductModel.MAIN_PRODUCT
 });
-
-class Review {
-    String model;
-    int pk;
-    ReviewFields fields;
-
-    Review({
-        required this.model,
-        required this.pk,
-        required this.fields,
-    });
-
-    factory Review.fromJson(Map<String, dynamic> json) => Review(
-        model: json["model"],
-        pk: json["pk"],
-        fields: ReviewFields.fromJson(json["fields"]),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "model": model,
-        "pk": pk,
-        "fields": fields.toJson(),
-    };
-}
-
-class ReviewFields {
-    int product;
-    int user;
-    int rating;
-    String comment;
-    DateTime createdAt;
-
-    ReviewFields({
-        required this.product,
-        required this.user,
-        required this.rating,
-        required this.comment,
-        required this.createdAt,
-    });
-
-    factory ReviewFields.fromJson(Map<String, dynamic> json) => ReviewFields(
-        product: json["product"],
-        user: json["user"],
-        rating: json["rating"],
-        comment: json["comment"],
-        createdAt: DateTime.parse(json["created_at"]),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "product": product,
-        "user": user,
-        "rating": rating,
-        "comment": comment,
-        "created_at": createdAt.toIso8601String(),
-    };
-}
 
 class Stall {
     StallModel model;
