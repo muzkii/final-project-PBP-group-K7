@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'widgets/left_drawer.dart';
+import 'package:biteatui/widgets/left_drawer.dart';
 
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key});
