@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import '../screens/menu.dart';
-import 'package:biteatui/forms/product_form.dart';
+import '../screens/faculty_canteen_page.dart';
 import '../screens/stall_page.dart';
+import '../screens/product_page_ave.dart';
+import '../screens/product_detail_page_ave.dart';
 import '../screens/favorites_page.dart';
-import 'package:biteatui/forms/canteen_form.dart';
-import 'package:biteatui/forms/faculty_form.dart';
-import 'package:biteatui/forms/stall_form.dart';
+import '../forms/canteen_form.dart';
+import '../forms/faculty_form.dart';
+import '../forms/stall_form.dart';
+import '../forms/product_form.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -16,8 +18,8 @@ class LeftDrawer extends StatelessWidget {
       child: ListView(
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
+            decoration: const BoxDecoration(
+              color: Color(0xFFF79022), // Orange background
             ),
             child: const Column(
               children: [
@@ -43,25 +45,14 @@ class LeftDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.home_outlined),
-            title: const Text('Home Page'),
-            // Redirection part to MyHomePage
-            onTap: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyHomePage(),
-                  ));
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.inventory),
-            title: const Text('Add Product'),
-            // Redirection part to ProductFormPage
+            leading: const Icon(Icons.local_dining),
+            title: const Text('Faculty Canteen'),
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ProductForm()),
+                MaterialPageRoute(
+                  builder: (context) => const FacultyCanteenPage(),
+                ),
               );
             },
           ),
@@ -69,13 +60,38 @@ class LeftDrawer extends StatelessWidget {
             leading: const Icon(Icons.store),
             title: const Text('Stalls'),
             onTap: () {
-              // need to pass the faculty ID 
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const StallPage(
                     facultyId: 1, // Replace with actual selected faculty ID
                   ),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.inventory),
+            title: const Text('Products Overview'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProductPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.info),
+            title: const Text('Product Details'),
+            onTap: () {
+              // ignore: prefer_typing_uninitialized_variables
+              var product;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductDetailPage(product:product),
                 ),
               );
             },
@@ -119,6 +135,16 @@ class LeftDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const StallForm()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.inventory_2),
+            title: const Text('Add Product'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProductForm()),
               );
             },
           ),
