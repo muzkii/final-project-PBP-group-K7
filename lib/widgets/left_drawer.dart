@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/menu.dart';
 import '../product_form.dart';
+import '../screens/stall_page.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -57,6 +58,21 @@ class LeftDrawer extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const ProductFormPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.store),
+            title: const Text('Stalls'),
+            onTap: () {
+              // need to pass the faculty ID 
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const StallPage(
+                    facultyId: 1, // Replace with actual selected faculty ID
+                  ),
+                ),
               );
             },
           ),
