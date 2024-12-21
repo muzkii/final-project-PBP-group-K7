@@ -4,6 +4,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'screens/login.dart';
 import 'screens/landingpage.dart';
+import 'screens/faculty_canteen_page.dart';
 
 void main() {
   runApp(const MyApp());
