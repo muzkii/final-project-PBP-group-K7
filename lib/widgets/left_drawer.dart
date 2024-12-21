@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../screens/menu.dart';
 import '../product_form.dart';
 import '../screens/stall_page.dart';
+import '../screens/favorites_page.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -72,6 +73,18 @@ class LeftDrawer extends StatelessWidget {
                   builder: (context) => const StallPage(
                     facultyId: 1, // Replace with actual selected faculty ID
                   ),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.favorite),
+            title: const Text('Favorites'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FavoritesPage(),
                 ),
               );
             },
