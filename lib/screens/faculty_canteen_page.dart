@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:biteatui/models/all_entry.dart';
+import 'package:biteatui/widgets/footer.dart';
 
 class FacultyCanteenPage extends StatefulWidget {
   const FacultyCanteenPage({Key? key}) : super(key: key);
@@ -67,7 +68,7 @@ class _FacultyCanteenPageState extends State<FacultyCanteenPage> {
                   subtitle: Text(faculty.fields.nickname),
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(
-                        "http://localhost:8000/${faculty.fields.image}"),
+                        "${faculty.fields.image}"),
                   ),
                   children: [
                     FutureBuilder(
@@ -97,7 +98,7 @@ class _FacultyCanteenPageState extends State<FacultyCanteenPage> {
                                       subtitle: Text(canteen.fields.price),
                                       leading: CircleAvatar(
                                         backgroundImage: NetworkImage(
-                                            "http://localhost:8000/${canteen.fields.image}"),
+                                            "${canteen.fields.image}"),
                                       ),
                                     ))
                                 .toList(),
@@ -111,6 +112,12 @@ class _FacultyCanteenPageState extends State<FacultyCanteenPage> {
             );
           }
         },
+      ),
+      floatingActionButton: Footer(
+        onAddFaculty: () => print("Add Faculty clicked"),
+        onAddCanteen: () => print("Add Canteen clicked"),
+        onAddStall: () => print("Add Stall clicked"),
+        onAddProduct: () => print("Add Product clicked"),
       ),
     );
   }
