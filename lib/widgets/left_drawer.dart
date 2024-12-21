@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/menu.dart';
-import '../product_form.dart';
+import 'package:biteatui/forms/product_form.dart';
 import '../screens/stall_page.dart';
 import '../screens/favorites_page.dart';
 
