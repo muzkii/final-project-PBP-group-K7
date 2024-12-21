@@ -16,3 +16,6 @@
 
 # Keep Guava classes (optional, if minification breaks its functionality)
 -keep class com.google.common.** { *; }
+
+# Suppress warnings for AnnotatedType
+-dontwarn java.lang.reflect.AnnotatedType
