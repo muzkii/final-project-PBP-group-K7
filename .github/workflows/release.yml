@@ -46,6 +46,13 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: flutter build apk --split-per-abi
 
+      - name: Upload R8 Missing Rules
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: missing_rules
+          path: build/app/outputs/mapping/release/missing_rules.txt
+
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(TZ='Asia/Jakarta' date +'%A %d-%m-%Y %T WIB')"
