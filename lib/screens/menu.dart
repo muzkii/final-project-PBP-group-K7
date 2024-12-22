@@ -210,6 +210,7 @@ class MyHomePage extends StatelessWidget {
             ),
             const SizedBox(height: 35),
 
+            // Recommendations Section
             SizedBox(
               height: 210, // Fixed height for recommendations section
               child: ListView(
@@ -226,6 +227,7 @@ class MyHomePage extends StatelessWidget {
                       faculty: "Fasilkom UI",
                       price: "16k",
                       cardWidth: cardWidth * 0.8,
+                      productId: 15, // Ensure to pass the correct productId
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -239,6 +241,7 @@ class MyHomePage extends StatelessWidget {
                       faculty: "FIB UI",
                       price: "20k",
                       cardWidth: cardWidth * 0.8,
+                      productId: 16, // Ensure to pass the correct productId
                     ),
                   ),
                 ],
@@ -249,7 +252,7 @@ class MyHomePage extends StatelessWidget {
             // Hits under 15K Section
             Container(
               width: double.infinity,
-              height: 380, // Height of container
+              height: 450, // Height of container
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
@@ -302,7 +305,7 @@ class MyHomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   // Scrollable Cards
-                  Expanded( // Use Expanded to allow ListView to take available space
+                  Expanded(
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -313,7 +316,7 @@ class MyHomePage extends StatelessWidget {
                           child: _buildHitsUnder15kCard(
                             context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
-                            price: 'assets/pictures/price_circle13.png',
+                            price: "13k", // Dynamic price
                             department: "FISIP UI",
                             foodTitle: "Nasi Uduk",
                             stall: "Siomay Ikan Tenggiri",
@@ -327,7 +330,7 @@ class MyHomePage extends StatelessWidget {
                           child: _buildHitsUnder15kCard(
                             context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
-                            price: 'assets/pictures/price_circle14.png',
+                            price: "14k", // Dynamic price
                             department: "FISIP UI",
                             foodTitle: "Nasi Uduk",
                             stall: "Siomay Ikan Tenggiri",
@@ -335,13 +338,13 @@ class MyHomePage extends StatelessWidget {
                             productId: 16,
                           ),
                         ),
-                        // third card
+                        // Third Card
                         Padding(
                           padding: const EdgeInsets.only(right: 16.0, bottom: 15.0),
                           child: _buildHitsUnder15kCard(
                             context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
-                            price: 'assets/pictures/price_circle14.png',
+                            price: "12k", // Dynamic price
                             department: "FISIP UI",
                             foodTitle: "Nasi Uduk",
                             stall: "Siomay Ikan Tenggiri",
@@ -514,7 +517,7 @@ class RecommendationCard extends StatelessWidget {
   final String faculty;
   final String price;
   final double cardWidth;
-  final int? productId; // Add this
+  final int? productId; // Added for favorites functionality
 
   const RecommendationCard({
     Key? key,
@@ -525,16 +528,16 @@ class RecommendationCard extends StatelessWidget {
     required this.faculty,
     required this.price,
     required this.cardWidth,
-    this.productId, // Add this
+    this.productId, // Optional productId
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Get screen width to scale text
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     // Adjust these multipliers as needed for a good look
-    final recTextSize = screenWidth * 0.025;   // ~10px on a 400px wide screen
+    final recTextSize = screenWidth * 0.025; // ~10px on a 400px wide screen
     final titleTextSize = screenWidth * 0.045; // ~18px on a 400px wide screen
     final subTitleTextSize = screenWidth * 0.03;
     final facultyTextSize = screenWidth * 0.032;
@@ -552,8 +555,8 @@ class RecommendationCard extends StatelessWidget {
               title: title,
               subTitle: subTitle,
               faculty: faculty,
-              price: price,
-              productId: productId ?? -1, // Add this line
+              price: price, // Pass price as string
+              productId: productId ?? -1, // Ensure a valid productId
             );
           },
         );
@@ -667,20 +670,21 @@ class RecommendationCard extends StatelessWidget {
 Widget _buildHitsUnder15kCard({
   required BuildContext context,
   required String imagePath,
-  required String price,
+  required String price, // Changed from priceCirclePath to price
   required String department,
   required String foodTitle,
   required String stall,
   required double cardWidth,
-  int? productId, 
+  int? productId, // Ensure productId is provided
 }) {
   final screenWidth = MediaQuery.of(context).size.width;
   final screenHeight = MediaQuery.of(context).size.height;
 
+  // Responsive font sizes
   final departmentFontSize = screenWidth * 0.035;
   final foodTitleFontSize = screenWidth * 0.045;
   final stallFontSize = screenWidth * 0.035;
-  final priceCircleSize = screenWidth * 0.18; // Adjust multiplier as needed
+  final priceCircleSize = screenWidth * 0.18; // Adjust as needed
 
   return GestureDetector(
     onTap: () {
@@ -689,13 +693,115 @@ Widget _buildHitsUnder15kCard({
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (BuildContext ctx) {
-          return ProductQuickView(
-            imagePath: imagePath,
-            title: foodTitle,
-            subTitle: stall,
-            faculty: department,
-            price: price, 
-            productId: productId ?? -1,
+          return SingleChildScrollView(
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight: screenHeight * 0.8, // Limit to 80% of screen height
+              ),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Close Button
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                  // Product Image
+                  Image.asset(
+                    imagePath,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  const SizedBox(height: 16),
+                  // Product Title
+                  Text(
+                    foodTitle,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Product Subtitle
+                  Text(
+                    stall,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 8),
+                  // Faculty/Location
+                  Text(
+                    department,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  // Price
+                  Text(
+                    'Price: $price',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Add to Favorites Button
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.favorite_border),
+                    label: const Text('Add to Favorites'),
+                    onPressed: () async {
+                      if (productId != -1) {
+                        final request = context.read<CookieRequest>();
+                        try {
+                          await request.post(
+                            'http://localhost:8000/favorite/$productId/',
+                            {},
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Added to favorites!')),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Failed to add to favorites')),
+                          );
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Invalid product ID')),
+                        );
+                      }
+                    },
+                  ),
+                  // View Full Details Button
+                  TextButton(
+                    child: const Text('View Full Details'),
+                    onPressed: () {
+                      Navigator.pop(context); // Close bottom sheet
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailPage(
+                            imagePath: imagePath,
+                            title: foodTitle,
+                            subTitle: stall,
+                            faculty: department,
+                            price: price,
+                            productId: productId, // Pass the productId
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
           );
         },
       );
@@ -704,7 +810,7 @@ Widget _buildHitsUnder15kCard({
       width: cardWidth,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20), // Rounded corners
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -714,7 +820,7 @@ Widget _buildHitsUnder15kCard({
         ],
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min, // Ensures the column takes minimal vertical space
+        mainAxisSize: MainAxisSize.min, // Minimal vertical space
         children: [
           // Food Image Section with Stack + price circle on top
           Stack(
@@ -738,15 +844,15 @@ Widget _buildHitsUnder15kCard({
                 height: priceCircleSize,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.orange, // Customize the color as needed
+                  color: Colors.orange, // Background color for price circle
                 ),
                 child: Center(
                   child: Text(
                     price,
                     style: TextStyle(
-                      fontSize: screenWidth * 0.04, // Adjust as needed
+                      fontSize: screenWidth * 0.04, // Responsive font size
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Colors.white, // Price text color
                     ),
                   ),
                 ),
@@ -806,10 +912,10 @@ Widget _buildHitsUnder15kCard({
                   ),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    minimumSize: Size.zero, // Reduces the button's minimum size
+                    minimumSize: Size.zero, // Makes button compact
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     elevation: 2,
-                    backgroundColor: Colors.orange, // Customize as needed
+                    backgroundColor: Colors.orange, // Button color
                   ),
                   onPressed: () async {
                     if (productId != null && productId != -1) {
@@ -844,14 +950,13 @@ Widget _buildHitsUnder15kCard({
   );
 }
 
-
 class ProductQuickView extends StatelessWidget {
   final String imagePath;
   final String title;
   final String subTitle;
   final String faculty;
   final String price;
-  final int productId; // Add this
+  final int productId; // Added for favorites functionality
 
   const ProductQuickView({
     Key? key,
@@ -860,21 +965,26 @@ class ProductQuickView extends StatelessWidget {
     required this.subTitle,
     required this.faculty,
     required this.price,
-    required this.productId, // Add this
+    required this.productId, // Ensure productId is provided
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Wrap content in SingleChildScrollView to prevent overflow
+    // Get screen height to set max height for the pop-up
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return SingleChildScrollView(
       child: Container(
+        constraints: BoxConstraints(
+          maxHeight: screenHeight * 0.8, // Limit pop-up height to 80% of screen height
+        ),
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.min, // Ensures the column takes minimal vertical space
           children: [
             // Close Button
             Align(
@@ -976,14 +1086,14 @@ class ProductQuickView extends StatelessWidget {
   }
 }
 
-// Add this class in menu.dart after your other widget classes
+// Product Detail Page
 class ProductDetailPage extends StatelessWidget {
   final String imagePath;
   final String title;
   final String subTitle;
   final String faculty;
   final String price;
-  final int? productId; 
+  final int? productId; // Optional productId
 
   const ProductDetailPage({
     Key? key,
@@ -992,16 +1102,16 @@ class ProductDetailPage extends StatelessWidget {
     required this.subTitle,
     required this.faculty,
     required this.price,
-    this.productId, // Now optional
+    this.productId, // Optional
   }) : super(key: key);
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
       ),
-      body: SingleChildScrollView(
+      body: SingleChildScrollView( // Ensure content is scrollable
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1031,7 +1141,7 @@ class ProductDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    faculty,
+                    "Location: $faculty",
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 8),
@@ -1048,7 +1158,7 @@ class ProductDetailPage extends StatelessWidget {
                     icon: const Icon(Icons.favorite_border),
                     label: const Text('Add to Favorites'),
                     onPressed: () async {
-                      if (productId != null) {
+                      if (productId != null && productId != -1) {
                         final request = context.read<CookieRequest>();
                         try {
                           await request.post(
