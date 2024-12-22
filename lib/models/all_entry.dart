@@ -9,6 +9,7 @@ AllEntries allEntriesFromJson(String str) => AllEntries.fromJson(json.decode(str
 String allEntriesToJson(AllEntries data) => json.encode(data.toJson());
 
 class AllEntries {
+    List<User> users;
     List<Faculty> faculties;
     List<Canteen> canteens;
     List<Stall> stalls;
@@ -17,6 +18,7 @@ class AllEntries {
     List<FavoriteProduct> favoriteProducts;
 
     AllEntries({
+        required this.users,
         required this.faculties,
         required this.canteens,
         required this.stalls,
@@ -26,6 +28,7 @@ class AllEntries {
     });
 
     factory AllEntries.fromJson(Map<String, dynamic> json) => AllEntries(
+        users: List<User>.from(json["users"].map((x) => User.fromJson(x))),
         faculties: List<Faculty>.from(json["faculties"].map((x) => Faculty.fromJson(x))),
         canteens: List<Canteen>.from(json["canteens"].map((x) => Canteen.fromJson(x))),
         stalls: List<Stall>.from(json["stalls"].map((x) => Stall.fromJson(x))),
@@ -35,6 +38,7 @@ class AllEntries {
     );
 
     Map<String, dynamic> toJson() => {
+        "users": List<dynamic>.from(users.map((x) => x.toJson())),
         "faculties": List<dynamic>.from(faculties.map((x) => x.toJson())),
         "canteens": List<dynamic>.from(canteens.map((x) => x.toJson())),
         "stalls": List<dynamic>.from(stalls.map((x) => x.toJson())),
@@ -149,7 +153,7 @@ class FacultyFields {
 }
 
 class FavoriteProduct {
-    String model;
+    FavoriteProductModel model;
     int pk;
     FavoriteProductFields fields;
 
@@ -160,13 +164,13 @@ class FavoriteProduct {
     });
 
     factory FavoriteProduct.fromJson(Map<String, dynamic> json) => FavoriteProduct(
-        model: json["model"],
+        model: favoriteProductModelValues.map[json["model"]]!,
         pk: json["pk"],
         fields: FavoriteProductFields.fromJson(json["fields"]),
     );
 
     Map<String, dynamic> toJson() => {
-        "model": model,
+        "model": favoriteProductModelValues.reverse[model],
         "pk": pk,
         "fields": fields.toJson(),
     };
@@ -191,6 +195,14 @@ class FavoriteProductFields {
         "product": product,
     };
 }
+
+enum FavoriteProductModel {
+    MAIN_FAVORITEPRODUCT
+}
+
+final favoriteProductModelValues = EnumValues({
+    "main.favoriteproduct": FavoriteProductModel.MAIN_FAVORITEPRODUCT
+});
 
 class Product {
     ProductModel model;
@@ -278,6 +290,7 @@ class ReviewFields {
     int rating;
     String comment;
     DateTime createdAt;
+    String? username;
 
     ReviewFields({
         required this.product,
@@ -285,6 +298,7 @@ class ReviewFields {
         required this.rating,
         required this.comment,
         required this.createdAt,
+        this.username,
     });
 
     factory ReviewFields.fromJson(Map<String, dynamic> json) => ReviewFields(
@@ -293,6 +307,7 @@ class ReviewFields {
         rating: json["rating"],
         comment: json["comment"],
         createdAt: DateTime.parse(json["created_at"]),
+        username: json['username'],
     );
 
     Map<String, dynamic> toJson() => {
@@ -359,6 +374,90 @@ enum StallModel {
 final stallModelValues = EnumValues({
     "main.stall": StallModel.MAIN_STALL
 });
+
+class User {
+    String model;
+    int pk;
+    UserFields fields;
+
+    User({
+        required this.model,
+        required this.pk,
+        required this.fields,
+    });
+
+    factory User.fromJson(Map<String, dynamic> json) => User(
+        model: json["model"],
+        pk: json["pk"],
+        fields: UserFields.fromJson(json["fields"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "model": model,
+        "pk": pk,
+        "fields": fields.toJson(),
+    };
+}
+
+class UserFields {
+    String password;
+    DateTime lastLogin;
+    bool isSuperuser;
+    String username;
+    String firstName;
+    String lastName;
+    String email;
+    bool isStaff;
+    bool isActive;
+    DateTime dateJoined;
+    List<dynamic> groups;
+    List<dynamic> userPermissions;
+
+    UserFields({
+        required this.password,
+        required this.lastLogin,
+        required this.isSuperuser,
+        required this.username,
+        required this.firstName,
+        required this.lastName,
+        required this.email,
+        required this.isStaff,
+        required this.isActive,
+        required this.dateJoined,
+        required this.groups,
+        required this.userPermissions,
+    });
+
+    factory UserFields.fromJson(Map<String, dynamic> json) => UserFields(
+        password: json["password"],
+        lastLogin: DateTime.parse(json["last_login"]),
+        isSuperuser: json["is_superuser"],
+        username: json["username"],
+        firstName: json["first_name"],
+        lastName: json["last_name"],
+        email: json["email"],
+        isStaff: json["is_staff"],
+        isActive: json["is_active"],
+        dateJoined: DateTime.parse(json["date_joined"]),
+        groups: List<dynamic>.from(json["groups"].map((x) => x)),
+        userPermissions: List<dynamic>.from(json["user_permissions"].map((x) => x)),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "password": password,
+        "last_login": lastLogin.toIso8601String(),
+        "is_superuser": isSuperuser,
+        "username": username,
+        "first_name": firstName,
+        "last_name": lastName,
+        "email": email,
+        "is_staff": isStaff,
+        "is_active": isActive,
+        "date_joined": dateJoined.toIso8601String(),
+        "groups": List<dynamic>.from(groups.map((x) => x)),
+        "user_permissions": List<dynamic>.from(userPermissions.map((x) => x)),
+    };
+}
 
 class EnumValues<T> {
     Map<String, T> map;

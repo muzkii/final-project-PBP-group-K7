@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:biteatui/models/all_entry.dart';
 
@@ -14,6 +13,19 @@ class ProductDetailPage extends StatefulWidget {
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
+
+  Future<User?> fetchUser(CookieRequest request, int userId) async {
+    final response = await request.get('http://localhost:8000/show_json/');
+    if (response["users"] != null) {
+      for (var u in response["users"]) {
+        if (u != null && u["pk"] == userId) {
+          return User.fromJson(u);
+        }
+      }
+    }
+    return null;
+  }
+  
   Future<List<Review>> fetchReviews(CookieRequest request, int productId) async {
     final response = await request.get('http://localhost:8000/show_json/');
     List<Review> reviews = [];
@@ -21,7 +33,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     if (response["reviews"] != null) {
       for (var r in response["reviews"]) {
         if (r != null && r["fields"]["product"] == productId) {
-          reviews.add(Review.fromJson(r));
+          Review review = Review.fromJson(r);
+          User? user = await fetchUser(request, review.fields.user);
+          if (user != null) {
+            review.fields.username = user.fields.username; // Add username to review fields
+          }
+          reviews.add(review);
         }
       }
     }
@@ -29,51 +46,49 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return reviews;
   }
 
-  Future<void> submitReview(String request, int productId, int rating, String comment) async {
-    final response = await http.post(
-      Uri.parse('http://localhost:8000/submit-review-flutter/'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Token $request',
-      },
-      body: jsonEncode({
-        'product_id': productId,
-        'rating': rating,
-        'comment': comment,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      if (data['success']) {
+  Future<void> submitReview(CookieRequest request, int productId, int rating, String comment) async {
+    try {
+      final response = await request.post(
+        'http://localhost:8000/submit-review-flutter/',
+        jsonEncode({
+          'product_id': productId.toString(),
+          'rating': rating.toString(),
+          'comment': comment,
+          'headers': {
+            'Content-Type': 'application/json',
+          },
+        }),
+      );
+      if (response['success'] == true) {
         print("Review submitted successfully.");
+        setState(() {}); // Refresh the reviews
       } else {
-        print("Error: ${data['error']}");
+        print("Error: ${response['error']}");
       }
-    } else {
-      print("Failed to submit review. Status code: ${response.statusCode}");
+    } catch (e) {
+      print("Failed to submit review. Error: $e");
     }
   }
 
-  Future<void> deleteReview(String request, int reviewId) async {
-    final response = await http.post(
-      Uri.parse('http://localhost:8000/delete-review-flutter/'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Token $request',
-      },
-      body: jsonEncode({'review_id': reviewId}),
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      if (data['success']) {
+  Future<void> deleteReview(CookieRequest request, int reviewId) async {
+    try {
+      final response = await request.post(
+        'http://localhost:8000/delete-review-flutter/',
+        jsonEncode({
+          'review_id': reviewId.toString(),
+          'headers': {
+            'Content-Type': 'application/json',
+          },
+        }),
+      );
+      if (response['success'] == true) {
         print("Review deleted successfully.");
+        setState(() {}); // Refresh the reviews
       } else {
-        print("Error: ${data['error']}");
+        print("Error: ${response['error']}");
       }
-    } else {
-      print("Failed to delete review. Status code: ${response.statusCode}");
+    } catch (e) {
+      print("Failed to delete review. Error: $e");
     }
   }
 
@@ -146,23 +161,38 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 const Divider(),
                 const Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: Text('Reviews', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  child: Text('Customer Reviews', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 ),
                 Expanded(
                   child: snapshot.data!.isEmpty
-                      ? const Center(child: Text('No reviews yet.'))
+                      ? const Center(child: Text('No reviews yet. Be the first to review this product!'))
                       : ListView.builder(
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
                             Review review = snapshot.data![index];
-                            return ListTile(
-                              title: Text('Rating: ${review.fields.rating}'),
-                              subtitle: Text(review.fields.comment),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () {
-                                  deleteReview(request.headers['Authorization']!, review.pk);
-                                },
+                            return Container(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  top: BorderSide(color: Colors.grey),
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Rating: ${review.fields.rating} / 10',
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 4.0),
+                                  Text(review.fields.comment),
+                                  const SizedBox(height: 4.0),
+                                  Text(
+                                    '- ${review.fields.username} on ${review.fields.createdAt}',
+                                    style: const TextStyle(color: Colors.grey, fontSize: 12.0),
+                                  ),
+                                  
+                                ],
                               ),
                             );
                           },
@@ -189,7 +219,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   },
                                 ),
                                 TextField(
-                                  decoration: const InputDecoration(labelText: 'Rating (1-5)'),
+                                  decoration: const InputDecoration(labelText: 'Rating (1-10)'),
                                   keyboardType: TextInputType.number,
                                   onChanged: (value) {
                                     rating = int.parse(value);
@@ -207,7 +237,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(context);
-                                  submitReview(request.headers['Authorization']!, product.pk, rating, comment);
+                                  submitReview(request, product.pk, rating, comment);
                                 },
                                 child: const Text('Submit'),
                               ),

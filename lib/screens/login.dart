@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'register.dart';
+import '../providers/user_provider.dart';
 
 void main() {
   runApp(const LoginApp());
@@ -153,6 +154,11 @@ class _LoginPageState extends State<LoginPage> {
                   if (request.loggedIn) {
                     String message = response['message'];
                     String uname = response['username'];
+                    bool isStaff = response['is_staff'];
+                    // Set user information in UserProvider
+                    final userProvider = context.read<UserProvider>();
+                    userProvider.setUser(uname, isStaff);
+
                     if (context.mounted) {
                       Navigator.pushReplacement(
                         context,

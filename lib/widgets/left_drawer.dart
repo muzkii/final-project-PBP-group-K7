@@ -11,12 +11,15 @@ import '../forms/faculty_form.dart';
 import '../forms/stall_form.dart';
 import '../forms/product_form.dart';
 import '../screens/landingpage.dart';
+import '../providers/user_provider.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+
     return Drawer(
       child: ListView(
         children: [
@@ -94,7 +97,7 @@ class LeftDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProductDetailPage(product:product),
+                  builder: (context) => ProductDetailPage(product: product),
                 ),
               );
             },
@@ -111,46 +114,48 @@ class LeftDrawer extends StatelessWidget {
               );
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.add_business),
-            title: const Text('Add Canteen'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const CanteenForm()),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.school),
-            title: const Text('Add Faculty'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FacultyForm()),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.storefront),
-            title: const Text('Add Stall'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const StallForm()),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.inventory_2),
-            title: const Text('Add Product'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProductForm()),
-              );
-            },
-          ),
+          if (userProvider.isStaff) ...[
+            ListTile(
+              leading: const Icon(Icons.add_business),
+              title: const Text('Add Canteen'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CanteenForm()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.school),
+              title: const Text('Add Faculty'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FacultyForm()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.storefront),
+              title: const Text('Add Stall'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const StallForm()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.inventory_2),
+              title: const Text('Add Product'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProductForm()),
+                );
+              },
+            ),
+          ],
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),

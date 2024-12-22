@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:biteatui/screens/product_page.dart'; // Import the ProductPage
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '../models/all_entry.dart';
+import '../providers/user_provider.dart';
 
 void addStall(BuildContext context, CookieRequest request, Function refreshPage, int facultyId) async {
   final nameController = TextEditingController();
@@ -220,6 +221,7 @@ class _StallPageState extends State<StallPage> {
     final request = context.watch<CookieRequest>();
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final userProvider = context.watch<UserProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -306,6 +308,7 @@ class _StallPageState extends State<StallPage> {
                         stall: stall,
                         onEdit: () => editStall(context, request, stall, refreshPage, widget.facultyId),
                         onDelete: () => deleteStall(context, request, stall.pk, refreshPage, widget.facultyId),
+                        isStaff: userProvider.isStaff,
                         onTap: () { // Define the onTap behavior
                           Navigator.push(
                             context,
@@ -323,14 +326,14 @@ class _StallPageState extends State<StallPage> {
           ),
         ],
       ),
-      floatingActionButton: Footer(
+      floatingActionButton: userProvider.isStaff ? Footer(
         onAddFaculty: () {}, // Not used
         onAddCanteen: () {}, // Not used
         onAddStall: () {
           addStall(context, request, refreshPage, widget.facultyId); // Add stall functionality
         },
         onAddProduct: () {}, // Not used
-      ),
+      ) : null,
     );
   }
 }
@@ -339,6 +342,7 @@ class StallCard extends StatelessWidget {
   final Stall stall;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final bool isStaff;
   final VoidCallback onTap; // Added onTap callback
 
   const StallCard({
@@ -346,6 +350,7 @@ class StallCard extends StatelessWidget {
     required this.stall,
     required this.onEdit,
     required this.onDelete,
+    required this.isStaff,
     required this.onTap, // Initialize onTap
   });
 
@@ -379,24 +384,26 @@ class StallCard extends StatelessWidget {
               ),
               const Spacer(),
               // Action Buttons
+              if (isStaff) ...[
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                   // Edit Button
-                  IconButton(
-                    onPressed: onEdit,
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    tooltip: 'Edit Stall',
-                  ),
+                    IconButton(
+                      onPressed: onEdit,
+                      icon: const Icon(Icons.edit, color: Colors.blue),
+                      tooltip: 'Edit Stall',
+                    ),
                   // Delete Button
-                  IconButton(
-                    onPressed: onDelete,
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    tooltip: 'Delete Stall',
-                  ),
-                ],
-              ),
-            ],
+                    IconButton(
+                      onPressed: onDelete,
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      tooltip: 'Delete Stall',
+                    ),
+                  ],
+                ),
+              ],
+          ],
           ),
         ),
       ),
