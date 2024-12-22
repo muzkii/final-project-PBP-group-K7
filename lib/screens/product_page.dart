@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:biteatui/models/all_entry.dart';
-import 'product_detail_page_ave.dart';
+import 'product_detail_page.dart';
+import 'dart:convert';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({Key? key}) : super(key: key);
@@ -12,6 +13,10 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  void refreshPage() {
+    setState(() {});
+  }
+
   Future<List<Product>> fetchProducts(CookieRequest request) async {
     // Ensure your Django endpoint returns all products
     final response = await request.get('http://localhost:8000/show_json/');
@@ -29,22 +34,97 @@ class _ProductPageState extends State<ProductPage> {
     return products;
   }
 
-  Future<void> deleteProduct(CookieRequest request, int productId) async {
-    final response = await request.delete(
-      'http://localhost:8000/delete-product-flutter/$productId/',
-    );
+  void deleteProduct(BuildContext context, CookieRequest request, int productId, Function refreshPage) async {
+  showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: const Text('Delete Product'),
+      content: const Text('Are you sure you want to delete this product?'),
+      actions: [
+        TextButton(
+          onPressed: () async {
+            final response = await request.post('http://localhost:8000/delete-product-flutter/$productId/', {});
+            if (response['status'] == 'success') {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Product deleted successfully!")),
+              );
+              setState(() {}); // Refresh the product list after deletion
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Failed to delete product.")),
+              );
+            }
+            if (!context.mounted) return;
+            Navigator.pop(context);
+            refreshPage();
+          },
+          child: const Text('Delete'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+      ],
+    ),
+  );
+}
 
-    if (response['status'] == 'success') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Product deleted successfully!")),
-      );
-      setState(() {}); // Refresh the product list after deletion
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to delete product.")),
-      );
-    }
-  }
+void editProduct(BuildContext context, CookieRequest request, Product product, Function refreshPage) async {
+  final nameController = TextEditingController(text: product.fields.name);
+  final priceController = TextEditingController(text: product.fields.price);
+
+  showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: const Text('Edit Product'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: nameController,
+            decoration: const InputDecoration(labelText: 'Name'),
+          ),
+          TextField(
+            controller: priceController,
+            decoration: const InputDecoration(labelText: 'Price'),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () async {
+            final response = await request.post(
+              'http://localhost:8000/edit-product-flutter/${product.pk}/',
+              jsonEncode({
+                'name': nameController.text,
+                'price': priceController.text,
+                'stall': product.fields.stall.toString(),
+              })
+            );
+            if (response['status'] == 'success') {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Product updated successfully!")),
+              );
+              setState(() {}); // Refresh the product list after deletion
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Failed to update product.")),
+              );
+            }
+            if (!context.mounted) return;
+            Navigator.pop(context);
+            refreshPage();
+          },
+          child: const Text('Save'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+      ],
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -90,33 +170,22 @@ class _ProductPageState extends State<ProductPage> {
                         'https://media.istockphoto.com/id/1457433817/photo/group-of-healthy-food-for-flexitarian-diet.jpg?s=612x612&w=0&k=20&c=v48RE0ZNWpMZOlSp13KdF1yFDmidorO2pZTu2Idmd3M=',
                       ),
                     ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () async {
-                        bool confirm = await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text("Confirm Delete"),
-                              content: const Text("Are you sure you want to delete this product?"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.of(context).pop(false),
-                                  child: const Text("Cancel"),
-                                ),
-                                TextButton(
-                                  onPressed: () => Navigator.of(context).pop(true),
-                                  child: const Text("Delete"),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-
-                        if (confirm) {
-                          await deleteProduct(request, product.pk);
-                        }
-                      },
+                    trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          editProduct(context, request, snapshot.data![index], refreshPage);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          deleteProduct(context, request, snapshot.data![index].pk, refreshPage);
+                        },
+                      ),
+                    ],
                     ),
                     onTap: () {
                       Navigator.push(

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import '../screens/faculty_canteen_page.dart';
 import '../screens/stall_page.dart';
 import '../screens/product_page.dart';
-import '../screens/product_detail_page_ave.dart';
-import '../screens/favorites_page.dart';
+import '../screens/product_detail_page.dart';
+import '../screens/favorites_page_chiara.dart';
 import '../forms/canteen_form.dart';
 import '../forms/faculty_form.dart';
 import '../forms/stall_form.dart';
 import '../forms/product_form.dart';
+import '../screens/menu.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -78,20 +79,6 @@ class LeftDrawer extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const ProductPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('Product Details'),
-            onTap: () {
-              // ignore: prefer_typing_uninitialized_variables
-              var product;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProductDetailPage(product:product),
                 ),
               );
             },

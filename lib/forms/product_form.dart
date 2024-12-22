@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:biteatui/models/all_entry.dart';
+import '../screens/menu.dart';
+import 'dart:convert';
 
 class ProductForm extends StatefulWidget {
   const ProductForm({Key? key}) : super(key: key);
@@ -26,7 +28,7 @@ class _ProductFormState extends State<ProductForm> {
   Future<void> fetchStalls() async {
     try {
       final request = context.read<CookieRequest>();
-      final response = await request.get('http://localhost:8000/show_json_stalls/');
+      final response = await request.get('http://localhost:8000/show_json/');
 
       setState(() {
         stalls = (response['stalls'] as List)
@@ -73,10 +75,96 @@ class _ProductFormState extends State<ProductForm> {
               SizedBox(height: screenHeight * 0.05),
               // Add Product Button
               GestureDetector(
-                onTap: () {
-                  print('Product Name: ${productNameController.text}');
-                  print('Product Price: ${productPriceController.text}');
+                onTap: () async {
+                  // Perform validation
+                  final productName = productNameController.text.trim();
+                  final productPrice = productPriceController.text.trim();
+
+                  if (productName.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Product name cannot be empty!'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
+                  if (productPrice.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Product price cannot be empty!'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
+                  // Validate that price is an integer
+                  final price = int.tryParse(productPrice);
+                  if (price == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Product price must be a valid integer!'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
+                  // Validate that a stall is selected
+                  if (selectedStall == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Please select a stall!'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
+                  // If all validations pass, perform the add product logic
+                  try {
+                  final request = context.read<CookieRequest>();
+                  final response = await request.postJson(
+                      "http://localhost:8000/create-product-flutter/",
+                      jsonEncode(<String, String>{
+                        'name': productName,
+                        'stall': selectedStall!.pk.toString(),
+                        'price': productPrice,
+                      }),
+                  );
+                  if (context.mounted) {
+                    if (response['status'] == 'success') {
+                      ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(
+                          content: Text("New product has saved successfully!"),
+                        ));
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => MyHomePage()),
+                        );
+                    } else {
+                      ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(
+                          content:
+                          Text("Something went wrong, please try again."),
+                        ));
+                    }
+                  }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Error: $e'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                  print('Product Name: $productName');
+                  print('Product Price: $price');
                   print('From Stall: ${selectedStall?.fields.name}');
+
+                  // Add further logic here to submit the product to the backend or update state
                 },
                 child: Container(
                   width: screenWidth * 0.4,
