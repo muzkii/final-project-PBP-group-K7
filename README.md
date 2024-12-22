@@ -2,6 +2,10 @@
 
 [![Build status](https://build.appcenter.ms/v0.1/apps/3c2b2ff8-9307-4bc3-8bee-140ca3c2e1ac/branches/main/badge)](https://appcenter.ms)
 
+### Deployment Link
+
+[https://install.appcenter.ms/orgs/biteatui/apps/biteatui/distribution_groups/public/releases/7](https://install.appcenter.ms/orgs/biteatui/apps/biteatui/distribution_groups/public/releases/7)
+
 ### Table of Contents  
 - [Group Members](#group-members)  
 - [Application Description](#bookmark_tabs-application-description)  
