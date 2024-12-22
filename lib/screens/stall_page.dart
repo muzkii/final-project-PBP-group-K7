@@ -1,8 +1,11 @@
+// lib/screens/stall_page.dart
+
 import 'package:biteatui/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '../models/all_entry.dart';
+// import 'package:cached_network_image/cached_network_image.dart'; // For image caching
 
 void addStall(BuildContext context, CookieRequest request, Function refreshPage, int facultyId) async {
   final nameController = TextEditingController();
@@ -136,8 +139,44 @@ class StallPage extends StatefulWidget {
 }
 
 class _StallPageState extends State<StallPage> {
-  void refreshPage() {
-    setState(() {});
+  List<Stall> allStalls = [];          // All fetched stalls
+  List<Stall> displayedStalls = [];    // Stalls to display based on filter
+  String selectedCuisine = 'All';      // Currently selected cuisine
+
+  // List of cuisine types matching the backend choices
+  final List<String> cuisines = [
+    'All',
+    'Indonesian',
+    'Chinese',
+    'Western',
+    'Japanese',
+    'Korean',
+    'Indian',
+    'Beverages',
+    'Dessert',
+    'Others',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    final request = context.read<CookieRequest>();
+    try {
+      List<Stall> fetchedStalls = await fetchStallsByFaculty(request);
+      setState(() {
+        allStalls = fetchedStalls;
+        displayedStalls = allStalls; // Initially display all stalls
+      });
+    } catch (e) {
+      // Handle error appropriately, possibly set an error state
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching stalls: $e')),
+      );
+    }
   }
 
   Future<List<Stall>> fetchStallsByFaculty(CookieRequest request) async {
@@ -157,55 +196,114 @@ class _StallPageState extends State<StallPage> {
     return facultyStalls;
   }
 
+  void filterStalls() {
+    if (selectedCuisine == 'All') {
+      displayedStalls = allStalls;
+    } else {
+      displayedStalls = allStalls
+          .where((stall) => stall.fields.cuisine.toLowerCase() == selectedCuisine.toLowerCase())
+          .toList();
+    }
+  }
+
+  void refreshPage() {
+    fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Food In'),
+        backgroundColor: Colors.orange, // Optional: Match your theme
       ),
       body: Column(
         children: [
+          // Existing Subtitle and Stars
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text('Find the food you wish to explore!'),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Find the food you wish to explore!',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Inria Serif',
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Image.asset(
+                  'assets/pictures/stars2.png',
+                  width: 24,
+                  height: 24,
+                ),
               ],
             ),
           ),
+          const SizedBox(height: 8),
+          // Existing Divider
+          Container(
+            width: screenWidth * 0.6,
+            height: 1,
+            color: Colors.black,
+          ),
+          const SizedBox(height: 16),
+
+          // **Dropdown Filtering Section**
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Row(
+              children: [
+                const Text(
+                  'Filter by Cuisine: ',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                DropdownButton<String>(
+                  value: selectedCuisine,
+                  items: cuisines.map((String cuisine) {
+                    return DropdownMenuItem<String>(
+                      value: cuisine,
+                      child: Text(cuisine),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedCuisine = newValue!;
+                      filterStalls();
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // **Stalls List Section**
           Expanded(
-            child: FutureBuilder<List<Stall>>(
-              future: fetchStallsByFaculty(request),
-              builder: (context, AsyncSnapshot<List<Stall>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No stalls found in this faculty'));
-                } else {
-                  return GridView.builder(
+            child: displayedStalls.isEmpty
+                ? const Center(child: Text('No stalls found for the selected cuisine.'))
+                : GridView.builder(
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 16.0,
                       mainAxisSpacing: 16.0,
                     ),
-                    itemCount: snapshot.data!.length,
+                    padding: const EdgeInsets.all(16.0),
+                    itemCount: displayedStalls.length,
                     itemBuilder: (_, index) {
-                      final stall = snapshot.data![index];
+                      final stall = displayedStalls[index];
                       return StallCard(
                         stall: stall,
                         onEdit: () => editStall(context, request, stall, refreshPage, widget.facultyId),
                         onDelete: () => deleteStall(context, request, stall.pk, refreshPage, widget.facultyId),
                       );
                     },
-                  );
-                }
-              },
-            ),
+                  ),
           ),
         ],
       ),
@@ -245,6 +343,7 @@ class StallCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Stall Name
             Text(
               stall.fields.name,
               style: const TextStyle(
@@ -253,19 +352,23 @@ class StallCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8.0),
+            // Cuisine Type
             Text(
               'Cuisine: ${stall.fields.cuisine}',
               style: const TextStyle(fontSize: 14.0, color: Colors.grey),
             ),
             const Spacer(),
+            // Action Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // Edit Button
                 IconButton(
                   onPressed: onEdit,
                   icon: const Icon(Icons.edit, color: Colors.blue),
                   tooltip: 'Edit Stall',
                 ),
+                // Delete Button
                 IconButton(
                   onPressed: onDelete,
                   icon: const Icon(Icons.delete, color: Colors.red),
