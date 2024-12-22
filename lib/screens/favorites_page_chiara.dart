@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '/models/all_entry.dart';
+import '/screens/product_detail_page_ave.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({Key? key}) : super(key: key);
@@ -30,7 +31,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
           fields: Fields(
             name: prodJson['name'],
             price: double.tryParse(prodJson['price'].toString()) ?? double.nan, // Convert price to double
-            stall: prodJson['stall']?['name'] ?? 'Unknown Stall',
           ),
         );
       }).toList();
@@ -97,7 +97,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print(
-        'Rendering product: ${product.fields.name}, Price: ${product.fields.price}, Stall: ${product.fields.stall}');
+        'Rendering product: ${product.fields.name}, Price: ${product.fields.price}');
     return Card(
       elevation: 4,
       child: Column(
@@ -137,30 +137,17 @@ class ProductCard extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  'Stall: ${product.fields.stall}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black54,
-                  ),
-                ),
                 const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.favorite, color: Colors.red),
-                      onPressed: () async {
-                        final request = context.read<CookieRequest>();
-                        await request.post(
-                          'http://localhost:8000/unfavorite/${product.pk}/',
-                          {},
-                        );
-                        onRemove();
-                      },
-                    ),
-                  ],
+                IconButton(
+                  icon: const Icon(Icons.favorite, color: Colors.red),
+                  onPressed: () async {
+                    final request = context.read<CookieRequest>();
+                    await request.post(
+                      'http://localhost:8000/unfavorite/${product.pk}/',
+                      {},
+                    );
+                    onRemove();
+                  },
                 ),
               ],
             ),
@@ -171,7 +158,8 @@ class ProductCard extends StatelessWidget {
   }
 }
 
-class Product {
+
+class Product {                        
   final String model;
   final int pk;
   final Fields fields;
@@ -186,11 +174,9 @@ class Product {
 class Fields {
   final String name;
   final double price; // Changed to double
-  final String stall;
 
   Fields({
     required this.name,
     required this.price,
-    required this.stall,
   });
 }
