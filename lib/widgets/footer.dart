@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/user_provider.dart';
+import '../forms/faculty_form.dart'; 
+import '../forms/canteen_form.dart'; 
+import '../forms/stall_form.dart'; 
+import '../forms/product_form.dart'; 
 
 class Footer extends StatelessWidget {
   final VoidCallback onAddFaculty;
@@ -15,6 +21,8 @@ class Footer extends StatelessWidget {
   });
 
   void showAddOptionsModal(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -22,38 +30,52 @@ class Footer extends StatelessWidget {
       ),
       builder: (context) => Wrap(
         children: [
-          ListTile(
-            leading: const Icon(Icons.school, color: Colors.blue),
-            title: const Text("Add Faculty"),
-            onTap: () {
-              Navigator.pop(context);
-              onAddFaculty();
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.restaurant, color: Colors.green),
-            title: const Text("Add Canteen"),
-            onTap: () {
-              Navigator.pop(context);
-              onAddCanteen();
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.storefront, color: Colors.orange),
-            title: const Text("Add Stall"),
-            onTap: () {
-              Navigator.pop(context);
-              onAddStall();
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.fastfood, color: Colors.red),
-            title: const Text("Add Product"),
-            onTap: () {
-              Navigator.pop(context);
-              onAddProduct();
-            },
-          ),
+          if (userProvider.isStaff) ...[
+            ListTile(
+              leading: const Icon(Icons.school, color: Colors.blue),
+              title: const Text("Add Faculty"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FacultyForm()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.restaurant, color: Colors.green),
+              title: const Text("Add Canteen"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CanteenForm()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.storefront, color: Colors.orange),
+              title: const Text("Add Stall"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const StallForm()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.fastfood, color: Colors.red),
+              title: const Text("Add Product"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProductForm()),
+                );
+              },
+            ),
+          ],
         ],
       ),
     );
@@ -61,10 +83,14 @@ class Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () => showAddOptionsModal(context),
-      backgroundColor: Colors.orange,
-      child: const Icon(Icons.add, color: Colors.white),
-    );
+    final userProvider = Provider.of<UserProvider>(context);
+
+    return userProvider.isStaff
+        ? FloatingActionButton(
+            onPressed: () => showAddOptionsModal(context),
+            backgroundColor: Colors.orange,
+            child: const Icon(Icons.add, color: Colors.white),
+          )
+        : Container(); // Return an empty container if the user is not a staff member
   }
 }

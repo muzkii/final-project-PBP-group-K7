@@ -29,7 +29,7 @@ class _ProductFormState extends State<ProductForm> {
   Future<void> fetchStalls() async {
     try {
       final request = context.read<CookieRequest>();
-      final response = await request.get('http://localhost:8000/show_json/');
+      final response = await request.get('http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/show_json/');
 
       setState(() {
         stalls = (response['stalls'] as List)
@@ -123,7 +123,7 @@ class _ProductFormState extends State<ProductForm> {
                   try {
                   final request = context.read<CookieRequest>();
                   final response = await request.postJson(
-                      "http://localhost:8000/create-product-flutter/",
+                      "http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/create-product-flutter/",
                       jsonEncode(<String, String>{
                         'name': productName,
                         'stall': selectedStall!.pk.toString(),

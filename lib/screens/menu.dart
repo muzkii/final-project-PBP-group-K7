@@ -741,7 +741,7 @@ Widget _buildHitsUnder15kCard({
                         final request = context.read<CookieRequest>();
                         try {
                           await request.post(
-                            'http://localhost:8000/favorite/$productId/',
+                            'http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/favorite/$productId/',
                             {},
                           );
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -902,7 +902,7 @@ Widget _buildHitsUnder15kCard({
                       final request = context.read<CookieRequest>();
                       try {
                         await request.post(
-                          'http://localhost:8000/favorite/$productId/',
+                          'http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/favorite/$productId/',
                           {},
                         );
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -1021,7 +1021,7 @@ class ProductQuickView extends StatelessWidget {
                   final request = context.read<CookieRequest>();
                   try {
                     await request.post(
-                      'http://localhost:8000/favorite/$productId/',
+                      'http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/favorite/$productId/',
                       {},
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -1142,7 +1142,7 @@ class ProductDetailPage extends StatelessWidget {
                         final request = context.read<CookieRequest>();
                         try {
                           await request.post(
-                            'http://localhost:8000/favorite/$productId/',
+                            'http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/favorite/$productId/',
                             {},
                           );
                           ScaffoldMessenger.of(context).showSnackBar(

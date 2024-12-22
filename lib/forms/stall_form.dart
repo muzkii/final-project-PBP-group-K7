@@ -39,7 +39,7 @@ class _StallFormState extends State<StallForm> {
   Future<void> fetchCanteens() async {
     try {
       final request = context.read<CookieRequest>();
-      final response = await request.get('http://localhost:8000/show_json/');
+      final response = await request.get('http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/show_json/');
 
       setState(() {
         canteens = (response['canteens'] as List)
@@ -92,7 +92,7 @@ class _StallFormState extends State<StallForm> {
                     final request = context.read<CookieRequest>();
                     if (_formKey.currentState!.validate()) {
                       final response = await request.postJson(
-                        "http://localhost:8000/create-stall-flutter/",
+                        "http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/create-stall-flutter/",
                         jsonEncode(<String, String>{
                           'name': stallNameController.text,
                           'cuisine_type': selectedCuisineType ?? '',

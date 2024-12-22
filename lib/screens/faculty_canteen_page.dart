@@ -8,7 +8,7 @@ class CanteenPage extends StatelessWidget {
   const CanteenPage({super.key});
 
   Future<List<Canteen>> fetchCanteens(CookieRequest request) async {
-    final response = await request.get('http://localhost:8000/show_json/');
+    final response = await request.get('http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/show_json/');
     var data = response;
 
     List<Canteen> canteens = [];
@@ -21,7 +21,7 @@ class CanteenPage extends StatelessWidget {
   }
 
   Future<Map<int, String>> fetchFacultyMap(CookieRequest request) async {
-    final response = await request.get('http://localhost:8000/show_json/');
+    final response = await request.get('http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/show_json/');
     var data = response;
 
     Map<int, String> facultyMap = {};

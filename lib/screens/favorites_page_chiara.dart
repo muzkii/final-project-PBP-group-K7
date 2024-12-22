@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import '/models/all_entry.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({Key? key}) : super(key: key);
@@ -14,7 +13,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   Future<List<Product>> fetchFavorites(CookieRequest request) async {
     try {
       final favoritesResponse =
-          await request.get('http://localhost:8000/favorites/json/');
+          await request.get('http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/favorites/json/');
       print('Favorites Response: $favoritesResponse');
 
       return favoritesResponse.map<Product>((item) {
@@ -96,8 +95,11 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        'Rendering product: ${product.fields.name}, Price: ${product.fields.price}, Stall: ${product.fields.stall}');
+    // Get screen width and height
+    final screenWidth = MediaQuery.of(context).size.width;
+    final cardWidth = screenWidth / 3; // Subtract padding and spacing
+    final imageHeight = cardWidth * 0.75; // Aspect ratio for image
+
     return Card(
       elevation: 4,
       child: Column(
@@ -105,7 +107,7 @@ class ProductCard extends StatelessWidget {
         children: [
           // Product Image
           Container(
-            height: 120,
+            height: imageHeight,
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -118,6 +120,7 @@ class ProductCard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   product.fields.name,
@@ -130,7 +133,7 @@ class ProductCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Rp${product.fields.price.toStringAsFixed(0)}', // Format price
+                  'Rp${product.fields.price.toStringAsFixed(0)}',
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.orange,
@@ -144,6 +147,8 @@ class ProductCard extends StatelessWidget {
                     fontSize: 14,
                     color: Colors.black54,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -154,7 +159,7 @@ class ProductCard extends StatelessWidget {
                       onPressed: () async {
                         final request = context.read<CookieRequest>();
                         await request.post(
-                          'http://localhost:8000/unfavorite/${product.pk}/',
+                          'http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/unfavorite/${product.pk}/',
                           {},
                         );
                         onRemove();
@@ -170,6 +175,7 @@ class ProductCard extends StatelessWidget {
     );
   }
 }
+
 
 class Product {
   final String model;

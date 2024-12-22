@@ -149,7 +149,7 @@ class LeftDrawer extends StatelessWidget {
               final request = context.read<CookieRequest>();
 
               // Call the logout method
-              final response = await request.logout("http://localhost:8000/auth/logout/");
+              final response = await request.logout("http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/auth/logout/");
               if (context.mounted) {
                 if (response['status']) {
                   String uname = response["username"];
