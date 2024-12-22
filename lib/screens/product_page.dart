@@ -5,7 +5,9 @@ import 'package:biteatui/models/all_entry.dart';
 import 'product_detail_page_ave.dart';
 
 class ProductPage extends StatefulWidget {
-  const ProductPage({Key? key}) : super(key: key);
+  final int? stallId; 
+
+  const ProductPage({Key? key, this.stallId}) : super(key: key); 
 
   @override
   State<ProductPage> createState() => _ProductPageState();
@@ -13,15 +15,23 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   Future<List<Product>> fetchProducts(CookieRequest request) async {
-    // Ensure your Django endpoint returns all products
-    final response = await request.get('http://localhost:8000/show_json/');
+    String url = 'http://localhost:8000/products_json/'; // Updated endpoint
+    
+    // If stallId is provided, append it as a query parameter
+    if (widget.stallId != null) {
+      url += '?stall_id=${widget.stallId}';
+    }
 
-    // Decoding the response into JSON
-    var data = response;
+    final response = await request.get(url);
 
-    // Convert json data to Product objects
+    // Check for errors in the response
+    if (response == null || response['status'] == 'error') {
+      throw Exception(response != null ? response['message'] : 'Unknown error');
+    }
+
+    // Convert JSON data to Product objects
     List<Product> products = [];
-    for (var d in data["products"]) {
+    for (var d in response["products"]) {
       if (d != null) {
         products.add(Product.fromJson(d));
       }

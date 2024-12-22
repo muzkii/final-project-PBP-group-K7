@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import '../widgets/left_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
+import '../screens/stall_page.dart'; // Replace with the actual path to the file where StallPage is defined
 
 class MyHomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final List<ItemHomepage> items = [
-    ItemHomepage("View Product List", Icons.list),
-    ItemHomepage("Add Product", Icons.add),
-    ItemHomepage("Logout", Icons.logout),
-  ];
+  // final List<ItemHomepage> items = [
+  //   // ItemHomepage("View Product List", Icons.list),
+  //   // ItemHomepage("Add Product", Icons.add),
+  //   // ItemHomepage("Logout", Icons.logout),
+  // ];
 
   MyHomePage({super.key});
 
@@ -363,39 +364,6 @@ class MyHomePage extends StatelessWidget {
               screenHeight: screenHeight,
             ),
             const SizedBox(height: 30), // Spacing after the new section
-
-            // Content Section (GridView)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: GridView.count(
-                primary: false,
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(10),
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                crossAxisCount: 3,
-                children: items.map((ItemHomepage item) {
-                  return ItemCard(item);
-                }).toList(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            // Content Section (GridView)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: GridView.count(
-                primary: false,
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(10),
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                crossAxisCount: 3,
-                children: items.map((ItemHomepage item) {
-                  return ItemCard(item);
-                }).toList(),
-              ),
-            ),
-            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -403,56 +371,49 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-class ItemHomepage {
-  final String name;
-  final IconData icon;
+// class ItemCard extends StatelessWidget {
+//   final ItemHomepage item;
 
-  ItemHomepage(this.name, this.icon);
-}
+//   const ItemCard(this.item, {super.key});
 
-class ItemCard extends StatelessWidget {
-  final ItemHomepage item;
-
-  const ItemCard(this.item, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Theme.of(context).colorScheme.secondary,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: () {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(content: Text("You have pressed the ${item.name} button!")),
-            );
-        },
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  item.icon,
-                  color: Colors.white,
-                  size: 30.0,
-                ),
-                const Padding(padding: EdgeInsets.all(3)),
-                Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Material(
+//       color: Theme.of(context).colorScheme.secondary,
+//       borderRadius: BorderRadius.circular(12),
+//       child: InkWell(
+//         onTap: () {
+//           ScaffoldMessenger.of(context)
+//             ..hideCurrentSnackBar()
+//             ..showSnackBar(
+//               SnackBar(content: Text("You have pressed the ${item.name} button!")),
+//             );
+//         },
+//         child: Container(
+//           padding: const EdgeInsets.all(8),
+//           child: Center(
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: [
+//                 Icon(
+//                   item.icon,
+//                   color: Colors.white,
+//                   size: 30.0,
+//                 ),
+//                 const Padding(padding: EdgeInsets.all(3)),
+//                 Text(
+//                   item.name,
+//                   textAlign: TextAlign.center,
+//                   style: const TextStyle(color: Colors.white),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class CategoryItem extends StatefulWidget {
   final String imagePath;
@@ -476,25 +437,23 @@ class _CategoryItemState extends State<CategoryItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: (_) {
+      onTap: () { // Changed from onTapDown to onTap for navigation
         setState(() {
           isPressed = true; // Button pressed
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('You have clicked on the ${widget.label} category!'),
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StallPage(
+              facultyId: 1, // Replace with actual faculty ID if needed
+              initialCuisine: widget.label, // Pass the selected cuisine
+            ),
           ),
-        );
-      },
-      onTapUp: (_) {
-        setState(() {
-          isPressed = false; // Button released
-        });
-      },
-      onTapCancel: () {
-        setState(() {
-          isPressed = false; // Reset when tap is canceled
+        ).then((_) {
+          setState(() {
+            isPressed = false; // Reset after navigation
+          });
         });
       },
       child: Padding(

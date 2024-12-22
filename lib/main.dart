@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               useMaterial3: true,
               colorScheme: ColorScheme.fromSwatch(
-                primarySwatch: Colors.deepPurple,
-              ).copyWith(secondary: Colors.deepPurple[400]),
+                primarySwatch: Colors.deepOrange,
+              ).copyWith(secondary: Colors.deepOrange[100]),
             ),
             home: request.loggedIn ? MyHomePage() : LandingPage(),
           );
