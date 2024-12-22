@@ -29,6 +29,24 @@ class _ProductPageState extends State<ProductPage> {
     return products;
   }
 
+  Future<void> deleteProduct(CookieRequest request, int productId) async {
+    final response = await request.post(
+      'http://localhost:8000/delete-product-flutter/$productId/',
+      {},
+    );
+
+    if (response['status'] == 'success') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Product deleted successfully!")),
+      );
+      setState(() {}); // Refresh the product list after deletion
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Failed to delete product.")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
@@ -69,7 +87,37 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                     subtitle: Text("Price: ${product.fields.price}"),
                     leading: CircleAvatar(
-                      backgroundImage: NetworkImage('https://media.istockphoto.com/id/1457433817/photo/group-of-healthy-food-for-flexitarian-diet.jpg?s=612x612&w=0&k=20&c=v48RE0ZNWpMZOlSp13KdF1yFDmidorO2pZTu2Idmd3M='),
+                      backgroundImage: NetworkImage(
+                        'https://media.istockphoto.com/id/1457433817/photo/group-of-healthy-food-for-flexitarian-diet.jpg?s=612x612&w=0&k=20&c=v48RE0ZNWpMZOlSp13KdF1yFDmidorO2pZTu2Idmd3M=',
+                      ),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () async {
+                        bool confirm = await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Confirm Delete"),
+                              content: const Text("Are you sure you want to delete this product?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(false),
+                                  child: const Text("Cancel"),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(true),
+                                  child: const Text("Delete"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
+                        if (confirm) {
+                          await deleteProduct(request, product.pk);
+                        }
+                      },
                     ),
                     onTap: () {
                       Navigator.push(
