@@ -13,6 +13,31 @@ class ProductDetailPage extends StatefulWidget {
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
+  late Product product;
+  String cuisine = "";
+  String canteen = "";
+  String stall = "";
+  @override
+  void initState() {
+    super.initState();
+    product = widget.product;
+    //fetchDetailedProductInfo();
+  }
+  Future<void> fetchDetailedProductInfo() async {
+    try {
+      final request = context.read<CookieRequest>();
+      final response = await request.get('http://localhost:8000/detailed_product_info/${product.pk}/');
+      // Decode JSON string to a Map
+      Map<String, dynamic> jsonData = jsonDecode(response.body);
+      setState(() {
+        stall = jsonData['stall'];
+        canteen = jsonData['canteen'];
+        cuisine = jsonData['cuisine'];
+      });
+    } catch (e) {
+      print("Error fetching detailed product info: $e");
+    }
+  }
 
   Future<User?> fetchUser(CookieRequest request, int userId) async {
     final response = await request.get('http://localhost:8000/show_json/');
