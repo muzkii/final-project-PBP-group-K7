@@ -1,99 +1,8 @@
+import 'package:biteatui/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '../models/all_entry.dart';
-
-class StallPage extends StatefulWidget {
-  final int facultyId;
-
-  const StallPage({
-    super.key,
-    required this.facultyId,
-  });
-
-  @override
-  _StallPageState createState() => _StallPageState();
-}
-
-class _StallPageState extends State<StallPage> {
-  void refreshPage() {
-    setState(() {});
-  }
-
-  Future<List<Stall>> fetchStallsByFaculty(CookieRequest request) async {
-    final response = await request.get('http://localhost:8000/show_json/');
-    List<Stall> facultyStalls = [];
-    var canteens = response["canteens"]
-        .where((canteen) => canteen["fields"]["faculty"] == widget.facultyId)
-        .toList();
-
-    for (var stall in response["stalls"]) {
-      if (stall != null) {
-        if (canteens.any((c) => c["pk"] == stall["fields"]["canteen"])) {
-          facultyStalls.add(Stall.fromJson(stall));
-        }
-      }
-    }
-    return facultyStalls;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Faculty Stalls'),
-      ),
-      body: FutureBuilder<List<Stall>>(
-        future: fetchStallsByFaculty(request),
-        builder: (context, AsyncSnapshot<List<Stall>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No stalls found in this faculty'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (_, index) => Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: ListTile(
-                  title: Text(snapshot.data![index].fields.name),
-                  subtitle: Text(snapshot.data![index].fields.cuisine),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {
-                          editStall(context, request, snapshot.data![index], refreshPage, widget.facultyId);
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          deleteStall(context, request, snapshot.data![index].pk, refreshPage, widget.facultyId);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          addStall(context, request, refreshPage, widget.facultyId);
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
 
 void addStall(BuildContext context, CookieRequest request, Function refreshPage, int facultyId) async {
   final nameController = TextEditingController();
@@ -212,4 +121,154 @@ void deleteStall(BuildContext context, CookieRequest request, int stallId, Funct
       ],
     ),
   );
+}
+
+class StallPage extends StatefulWidget {
+  final int facultyId;
+
+  const StallPage({
+    super.key,
+    required this.facultyId,
+  });
+
+  @override
+  _StallPageState createState() => _StallPageState();
+}
+
+class _StallPageState extends State<StallPage> {
+  void refreshPage() {
+    setState(() {});
+  }
+
+  Future<List<Stall>> fetchStallsByFaculty(CookieRequest request) async {
+    final response = await request.get('http://localhost:8000/show_json/');
+    List<Stall> facultyStalls = [];
+    var canteens = response["canteens"]
+        .where((canteen) => canteen["fields"]["faculty"] == widget.facultyId)
+        .toList();
+
+    for (var stall in response["stalls"]) {
+      if (stall != null) {
+        if (canteens.any((c) => c["pk"] == stall["fields"]["canteen"])) {
+          facultyStalls.add(Stall.fromJson(stall));
+        }
+      }
+    }
+    return facultyStalls;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Food In'),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text('Find the food you wish to explore!'),
+              ],
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<Stall>>(
+              future: fetchStallsByFaculty(request),
+              builder: (context, AsyncSnapshot<List<Stall>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No stalls found in this faculty'));
+                } else {
+                  return GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16.0,
+                      mainAxisSpacing: 16.0,
+                    ),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (_, index) => StallCard(stall: snapshot.data![index]),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: Footer(
+        onAddFaculty: () {}, // Not used
+        onAddCanteen: () {}, // Not used
+        onAddStall: () {
+          addStall(context, request, refreshPage, widget.facultyId); // Add stall functionality
+        },
+        onAddProduct: () {}, // Not used
+      ),
+    );
+  }
+}
+
+class StallCard extends StatelessWidget {
+  final Stall stall;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  const StallCard({
+    super.key,
+    required this.stall,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              stall.fields.name,
+              style: const TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              'Cuisine: ${stall.fields.cuisine}',
+              style: const TextStyle(fontSize: 14.0, color: Colors.grey),
+            ),
+            const Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: onEdit,
+                  icon: const Icon(Icons.edit, color: Colors.blue),
+                  tooltip: 'Edit Stall',
+                ),
+                IconButton(
+                  onPressed: onDelete,
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  tooltip: 'Delete Stall',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

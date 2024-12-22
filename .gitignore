@@ -12,6 +12,7 @@ migrate_working_dir/
 *.keystore
 *.jks
 .env
+env
 
 # IntelliJ related
 *.iml
