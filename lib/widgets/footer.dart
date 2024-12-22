@@ -7,12 +7,12 @@ class Footer extends StatelessWidget {
   final VoidCallback onAddProduct;
 
   const Footer({
-    Key? key,
+    super.key,
     required this.onAddFaculty,
     required this.onAddCanteen,
     required this.onAddStall,
     required this.onAddProduct,
-  }) : super(key: key);
+  });
 
   void showAddOptionsModal(BuildContext context) {
     showModalBottomSheet(

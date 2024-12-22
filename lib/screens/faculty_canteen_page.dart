@@ -5,7 +5,7 @@ import 'package:biteatui/models/all_entry.dart';
 import 'package:biteatui/widgets/footer.dart';
 
 class FacultyCanteenPage extends StatefulWidget {
-  const FacultyCanteenPage({Key? key}) : super(key: key);
+  const FacultyCanteenPage({super.key});
 
   @override
   State<FacultyCanteenPage> createState() => _FacultyCanteenPageState();
@@ -68,7 +68,7 @@ class _FacultyCanteenPageState extends State<FacultyCanteenPage> {
                   subtitle: Text(faculty.fields.nickname),
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(
-                        "${faculty.fields.image}"),
+                        faculty.fields.image),
                   ),
                   children: [
                     FutureBuilder(
@@ -98,7 +98,7 @@ class _FacultyCanteenPageState extends State<FacultyCanteenPage> {
                                       subtitle: Text(canteen.fields.price),
                                       leading: CircleAvatar(
                                         backgroundImage: NetworkImage(
-                                            "${canteen.fields.image}"),
+                                            canteen.fields.image),
                                       ),
                                     ))
                                 .toList(),
