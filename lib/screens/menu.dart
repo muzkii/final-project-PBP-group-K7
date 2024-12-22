@@ -210,7 +210,6 @@ class MyHomePage extends StatelessWidget {
             ),
             const SizedBox(height: 35),
 
-            // Recommendations Section
             SizedBox(
               height: 210, // Fixed height for recommendations section
               child: ListView(
@@ -227,7 +226,6 @@ class MyHomePage extends StatelessWidget {
                       faculty: "Fasilkom UI",
                       price: "16k",
                       cardWidth: cardWidth * 0.8,
-                      productId: 15, // Ensure to pass the correct productId
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -241,7 +239,6 @@ class MyHomePage extends StatelessWidget {
                       faculty: "FIB UI",
                       price: "20k",
                       cardWidth: cardWidth * 0.8,
-                      productId: 16, // Ensure to pass the correct productId
                     ),
                   ),
                 ],
@@ -358,7 +355,31 @@ class MyHomePage extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 30), 
+            
+            // Cool Down the Heat section
+            CoolDownHeatSection(
+              screenWidth: screenWidth,
+              screenHeight: screenHeight,
+            ),
+            const SizedBox(height: 30), // Spacing after the new section
 
+            // Content Section (GridView)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: GridView.count(
+                primary: false,
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(10),
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                crossAxisCount: 3,
+                children: items.map((ItemHomepage item) {
+                  return ItemCard(item);
+                }).toList(),
+              ),
+            ),
+            const SizedBox(height: 20),
             // Content Section (GridView)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -1186,6 +1207,107 @@ class ProductDetailPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class CoolDownHeatSection extends StatelessWidget {
+  final double screenWidth;
+  final double screenHeight;
+
+  const CoolDownHeatSection({
+    Key? key,
+    required this.screenWidth,
+    required this.screenHeight,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate the text size based on the screen width
+        final double textSize = screenWidth * 0.06;
+
+        // Calculate the size of the assets based on the text size
+        final double flameWidth = textSize * 6.67; // Adjust multiplier as needed
+        final double flameHeight = textSize * 2.17; // Adjust multiplier as needed
+        final double linesWidth = textSize * 5.83; // Adjust multiplier as needed
+        final double linesHeight = textSize * 1.67; // Adjust multiplier as needed
+
+        return Column(
+          children: [
+            // Row with Assets
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1), // Adjust horizontal padding as needed
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // 3bluelines.png shifted slightly left and upwards
+                  Transform.translate(
+                    offset: const Offset(-63, 26), // Adjust the offset as needed
+                    child: Image.asset(
+                      'assets/pictures/3bluelines.png',
+                      width: linesWidth, // Adjust width as needed
+                      height: linesHeight, // Adjust height as needed
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  // flames.png shifted slightly right and upwards
+                  Transform.translate(
+                    offset: const Offset(17, 16), // Adjust the offset as needed
+                    child: Image.asset(
+                      'assets/pictures/flames.png',
+                      width: flameWidth, // Adjust width as needed
+                      height: flameHeight, // Adjust height as needed
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Title: Cool Down the Heat
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Cool ",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.bold,
+                      fontSize: textSize,
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "Down the ",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.bold,
+                      fontSize: textSize,
+                      color: Colors.black, // Neutral color for "Down the"
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "Heat",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.bold,
+                      fontSize: textSize,
+                      color: Colors.red,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20), // Additional spacing below title if needed
+          ],
+        );
+      },
     );
   }
 }
