@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '../screens/faculty_canteen_page.dart';
 import '../screens/stall_page.dart';
-import '../screens/product_page_ave.dart';
+import '../screens/product_page.dart';
 import '../screens/product_detail_page_ave.dart';
 import '../screens/favorites_page_chiara.dart';
 import '../forms/canteen_form.dart';

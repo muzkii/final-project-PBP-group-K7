@@ -1,5 +1,6 @@
 import '../screens/stall_form.dart';
 import 'package:flutter/material.dart';
+import '../screens/product_page.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '../screens/login.dart';
