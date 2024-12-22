@@ -838,7 +838,7 @@ class ProductQuickView extends StatelessWidget {
               final request = context.read<CookieRequest>();
               try {
                 await request.post(
-                  'http://localhost:8000/favorite/${productId}/',
+                  'http://localhost:8000/favorite/54/',
                   {},
                 );
                 ScaffoldMessenger.of(context).showSnackBar(

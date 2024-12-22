@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'screens/login.dart';
 import 'screens/landingpage.dart';
 import 'screens/faculty_canteen_page.dart';
+import 'screens/product_page_ave.dart';
+import 'screens/stall_form.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,15 +22,19 @@ class MyApp extends StatelessWidget {
         CookieRequest request = CookieRequest();
         return request;
       },
-      child: MaterialApp(
-        title: 'Bite @ UI',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSwatch(
-            primarySwatch: Colors.deepPurple,
-          ).copyWith(secondary: Colors.deepPurple[400]),
-        ),
-        home: LandingPage(),
+      child: Consumer<CookieRequest>(
+        builder: (context, request, child) {
+          return MaterialApp(
+            title: 'Bite @ UI',
+            theme: ThemeData(
+              useMaterial3: true,
+              colorScheme: ColorScheme.fromSwatch(
+                primarySwatch: Colors.deepPurple,
+              ).copyWith(secondary: Colors.deepPurple[400]),
+            ),
+            home: request.loggedIn ? MyHomePage() : LandingPage(),
+          );
+        },
       ),
     );
   }

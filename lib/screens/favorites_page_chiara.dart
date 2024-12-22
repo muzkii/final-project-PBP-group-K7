@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import '../models/all_entry.dart';
+import '/models/all_entry.dart'; 
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({Key? key}) : super(key: key);
@@ -12,13 +12,28 @@ class FavoritesPage extends StatefulWidget {
 
 class _FavoritesPageState extends State<FavoritesPage> {
   Future<List<Product>> fetchFavorites(CookieRequest request) async {
-    final response = await request.get('http://localhost:8000/favorites/json/');
+    // 1) Fetch the JSON array from your Django endpoint
+    final favoritesResponse = await request.get('http://localhost:8000/favorites/json/');
+    print (favoritesResponse);
+
     List<Product> favorites = [];
-    for (var d in response) {
-      if (d != null) {
-        favorites.add(Product.fromJson(d['product']));
-      }
+
+    // 2) Parse each favorite’s "product" object right away
+    for (var item in favoritesResponse) {
+      final prodJson = item['product']; 
+      favorites.add(
+        Product(
+          model: 'main.product', 
+          pk: prodJson['id'], 
+          fields: Fields(
+            name: prodJson['name'],
+            price: prodJson['price'],
+            stall: prodJson['stall']['name'], 
+          ),
+        ),
+      );
     }
+
     return favorites;
   }
 
@@ -33,11 +48,13 @@ class _FavoritesPageState extends State<FavoritesPage> {
       body: FutureBuilder<List<Product>>(
         future: fetchFavorites(request),
         builder: (context, AsyncSnapshot<List<Product>> snapshot) {
+          // 4) Display loading, empty, or your grid of favorite products
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('No favorites yet'));
           } else {
+            final products = snapshot.data!;
             return GridView.builder(
               padding: const EdgeInsets.all(16),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -46,10 +63,16 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
               ),
-              itemCount: snapshot.data!.length,
+              itemCount: products.length,
               itemBuilder: (context, index) {
-                final product = snapshot.data![index];
-                return ProductCard(product: product);
+                final product = products[index];
+                return ProductCard(
+                  product: product,
+                  onRemove: () {
+                    // When "unfavorite" completes, refresh
+                    setState(() {});
+                  },
+                );
               },
             );
           }
@@ -59,10 +82,16 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 }
 
+// A reusable card widget for each favorite product
 class ProductCard extends StatelessWidget {
   final Product product;
+  final VoidCallback onRemove;
 
-  const ProductCard({Key? key, required this.product}) : super(key: key);
+  const ProductCard({
+    Key? key,
+    required this.product,
+    required this.onRemove,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +104,9 @@ class ProductCard extends StatelessWidget {
           Container(
             height: 120,
             width: double.infinity,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/pictures/default_food.png'),
+                image: AssetImage('assets/pictures/default_food.png'), 
                 fit: BoxFit.cover,
               ),
             ),
@@ -105,6 +134,14 @@ class ProductCard extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
+                const SizedBox(height: 4),
+                Text(
+                  'Stall: ${product.fields.stall}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black54, // or any color you like
+                  ),
+                ),
                 const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -112,13 +149,13 @@ class ProductCard extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.favorite, color: Colors.red),
                       onPressed: () async {
+                        // 5) Unfavorite the product
                         final request = context.read<CookieRequest>();
                         await request.post(
                           'http://localhost:8000/unfavorite/${product.pk}/',
                           {},
                         );
-                        // Refresh the page
-                        (context as Element).reassemble();
+                        onRemove(); 
                       },
                     ),
                   ],
@@ -130,4 +167,28 @@ class ProductCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class Product {
+  final String model;  
+  final int pk;        
+  final Fields fields; 
+
+  Product({
+    required this.model,
+    required this.pk,
+    required this.fields,
+  });
+}
+
+class Fields {
+  final String name;
+  final String price;
+  final String stall;
+
+  Fields({
+    required this.name,
+    required this.price,
+    required this.stall,
+  });
 }
