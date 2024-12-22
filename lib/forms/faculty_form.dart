@@ -195,7 +195,7 @@ class _FacultyFormState extends State<FacultyForm> {
                   onTap: () async {
                     if (_formKey.currentState!.validate()) {
                       final response = await request.postJson(
-                        "http://10.0.2.2:8000/create-faculty-flutter/",
+                        "http://localhost:8000/create-faculty-flutter/",
                         jsonEncode(<String, String>{
                           'name': facultyNameController.text,
                           'nickname': facultyNicknameController.text,

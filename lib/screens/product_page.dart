@@ -30,8 +30,9 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Future<void> deleteProduct(CookieRequest request, int productId) async {
-    final response = await request.delete(
+    final response = await request.post(
       'http://localhost:8000/delete-product-flutter/$productId/',
+      {},
     );
 
     if (response['status'] == 'success') {

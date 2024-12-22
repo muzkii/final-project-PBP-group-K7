@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:biteatui/models/all_entry.dart';
+import 'dart:convert';
 
 class StallForm extends StatefulWidget {
   const StallForm({Key? key}) : super(key: key);
@@ -11,8 +12,8 @@ class StallForm extends StatefulWidget {
 }
 
 class _StallFormState extends State<StallForm> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController stallNameController = TextEditingController();
-  final TextEditingController stallImageUrlController = TextEditingController();
 
   Canteen? selectedCanteen;
   List<Canteen> canteens = [];
@@ -27,7 +28,7 @@ class _StallFormState extends State<StallForm> {
     'Beverages', 
     'Dessert', 
     'Others'
-    ];
+  ];
 
   @override
   void initState() {
@@ -61,57 +62,83 @@ class _StallFormState extends State<StallForm> {
         child: Container(
           width: screenWidth,
           padding: EdgeInsets.symmetric(vertical: screenHeight * 0.03),
-          child: Column(
-            children: [
-              // Header Logo and Text
-              buildHeader(screenWidth, screenHeight),
-              SizedBox(
-                width: screenWidth * 0.9,
-                child: Text(
-                  'Add Stall',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: const Color(0xFF1E1E1E),
-                    fontSize: screenWidth * 0.08,
-                    fontFamily: 'Inria Serif',
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 1.5,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                // Header Logo and Text
+                buildHeader(screenWidth, screenHeight),
+                SizedBox(
+                  width: screenWidth * 0.9,
+                  child: Text(
+                    'Add Stall',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: const Color(0xFF1E1E1E),
+                      fontSize: screenWidth * 0.08,
+                      fontFamily: 'Inria Serif',
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 1.5,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              // Stall Information Card
-              buildStallInformationCard(screenWidth, screenHeight),
-              SizedBox(height: screenHeight * 0.05),
-              // Add Stall Button
-              GestureDetector(
-                onTap: () {
-                  print('Stall Name: ${stallNameController.text}');
-                  print('Cuisine Type: $selectedCuisineType');
-                  print('From Canteen: ${selectedCanteen?.fields.name}');
-                  print('Stall Image URL: ${stallImageUrlController.text}');
-                },
-                child: Container(
-                  width: screenWidth * 0.4,
-                  height: screenHeight * 0.065,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF79022),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Add Stall',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: screenWidth * 0.05,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w700,
+                SizedBox(height: screenHeight * 0.02),
+                // Stall Information Card
+                buildStallInformationCard(screenWidth, screenHeight),
+                SizedBox(height: screenHeight * 0.05),
+                // Add Stall Button
+                GestureDetector(
+                  onTap: () async {
+                    final request = context.read<CookieRequest>();
+                    if (_formKey.currentState!.validate()) {
+                      final response = await request.postJson(
+                        "http://localhost:8000/create-stall-flutter/",
+                        jsonEncode(<String, String>{
+                          'name': stallNameController.text,
+                          'cuisine_type': selectedCuisineType ?? '',
+                          'canteen': selectedCanteen?.fields.name ?? '',
+                        }),
+                      );
+                      if (context.mounted) {
+                        if (response['status'] == 'success') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("New stall has been added successfully!"),
+                            ),
+                          );
+                          Navigator.pop(context);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Something went wrong, please try again. Error: ${response['message']}"),
+                            ),
+                          );
+                        }
+                      }
+                    }
+                  },
+                  child: Container(
+                    width: screenWidth * 0.4,
+                    height: screenHeight * 0.065,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF79022),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Add Stall',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screenWidth * 0.05,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -247,13 +274,11 @@ class _StallFormState extends State<StallForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 buildInputLabel('Stall’s Name', screenWidth),
-                buildInputField(stallNameController, 'Mie Ayam Pakde', screenWidth),
+                buildInputField(stallNameController, 'Mie Ayam Pakde', screenWidth, 'Stall’s Name'),
                 buildInputLabel('Cuisine Type', screenWidth),
                 buildCuisineDropdown(screenWidth),
                 buildInputLabel('From Canteen', screenWidth),
                 buildCanteenDropdown(screenWidth),
-                buildInputLabel('Stall Image URL', screenWidth),
-                buildInputField(stallImageUrlController, 'https://photo.com', screenWidth),
               ],
             ),
           ),
@@ -277,10 +302,10 @@ class _StallFormState extends State<StallForm> {
     );
   }
 
-  Widget buildInputField(TextEditingController controller, String placeholder, double screenWidth) {
+  Widget buildInputField(TextEditingController controller, String placeholder, double screenWidth, String label) {
     return Padding(
       padding: EdgeInsets.only(bottom: screenWidth * 0.04),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
           hintText: placeholder,
@@ -302,6 +327,12 @@ class _StallFormState extends State<StallForm> {
           fontFamily: 'Poppins',
           fontWeight: FontWeight.w700,
         ),
+        validator: (String? value) {
+          if (value == null || value.isEmpty) {
+            return "$label cannot be empty!";
+          }
+          return null;
+        },
       ),
     );
   }

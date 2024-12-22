@@ -55,7 +55,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     }
   }
 
-
   Future<void> deleteReview(String request, int reviewId) async {
     final response = await http.post(
       Uri.parse('http://localhost:8000/delete-review-flutter/'),
@@ -78,6 +77,27 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     }
   }
 
+  Future<void> addToFavorites(CookieRequest request, int productId) async {
+    try {
+      final response = await request.post(
+        'http://localhost:8000/favorite/$productId/',
+        {},
+      );
+      if (response['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Added to favorites!')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to add to favorites')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to add to favorites')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +131,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   child: Text(
                     'Price: ${product.fields.price}',
                     style: const TextStyle(fontSize: 18),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.favorite_border),
+                    label: const Text('Add to Favorites'),
+                    onPressed: () async {
+                      await addToFavorites(request, product.pk);
+                    },
                   ),
                 ),
                 const Divider(),

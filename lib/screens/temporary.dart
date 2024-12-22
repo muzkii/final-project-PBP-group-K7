@@ -210,6 +210,7 @@ class MyHomePage extends StatelessWidget {
             ),
             const SizedBox(height: 35),
 
+            // Recommendations Section
             SizedBox(
               height: 210, // Fixed height for recommendations section
               child: ListView(
@@ -226,6 +227,7 @@ class MyHomePage extends StatelessWidget {
                       faculty: "Fasilkom UI",
                       price: "16k",
                       cardWidth: cardWidth * 0.8,
+                      productId: 15, // Ensure to pass the correct productId
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -239,6 +241,7 @@ class MyHomePage extends StatelessWidget {
                       faculty: "FIB UI",
                       price: "20k",
                       cardWidth: cardWidth * 0.8,
+                      productId: 16, // Ensure to pass the correct productId
                     ),
                   ),
                 ],
@@ -313,7 +316,7 @@ class MyHomePage extends StatelessWidget {
                           child: _buildHitsUnder15kCard(
                             context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
-                            price: 'assets/pictures/price_circle13.png',
+                            price: "13k", // Dynamic price
                             department: "FISIP UI",
                             foodTitle: "Nasi Uduk",
                             stall: "Siomay Ikan Tenggiri",
@@ -327,7 +330,7 @@ class MyHomePage extends StatelessWidget {
                           child: _buildHitsUnder15kCard(
                             context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
-                            price: 'assets/pictures/price_circle14.png',
+                            price: "14k", // Dynamic price
                             department: "FISIP UI",
                             foodTitle: "Nasi Uduk",
                             stall: "Siomay Ikan Tenggiri",
@@ -335,13 +338,13 @@ class MyHomePage extends StatelessWidget {
                             productId: 16,
                           ),
                         ),
-                        // third card
+                        // Third Card
                         Padding(
                           padding: const EdgeInsets.only(right: 16.0, bottom: 15.0),
                           child: _buildHitsUnder15kCard(
                             context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
-                            price: 'assets/pictures/price_circle14.png',
+                            price: "12k", // Dynamic price
                             department: "FISIP UI",
                             foodTitle: "Nasi Uduk",
                             stall: "Siomay Ikan Tenggiri",
@@ -552,7 +555,7 @@ class RecommendationCard extends StatelessWidget {
               title: title,
               subTitle: subTitle,
               faculty: faculty,
-              price: price,
+              price: price, // Pass price as string
               productId: productId ?? -1, // Add this line
             );
           },
@@ -667,7 +670,7 @@ class RecommendationCard extends StatelessWidget {
 Widget _buildHitsUnder15kCard({
   required BuildContext context,
   required String imagePath,
-  required String price,
+  required String price, // Changed from priceCirclePath to price
   required String department,
   required String foodTitle,
   required String stall,
@@ -694,7 +697,7 @@ Widget _buildHitsUnder15kCard({
             title: foodTitle,
             subTitle: stall,
             faculty: department,
-            price: price, 
+            price: price, // Pass price as string
             productId: productId ?? -1,
           );
         },
@@ -843,7 +846,6 @@ Widget _buildHitsUnder15kCard({
     ),
   );
 }
-
 
 class ProductQuickView extends StatelessWidget {
   final String imagePath;
@@ -1001,7 +1003,7 @@ class ProductDetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: SingleChildScrollView(
+      body: SingleChildScrollView( // Ensure content is scrollable
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1031,7 +1033,7 @@ class ProductDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    faculty,
+                    "Location: $faculty",
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 8),
@@ -1048,7 +1050,7 @@ class ProductDetailPage extends StatelessWidget {
                     icon: const Icon(Icons.favorite_border),
                     label: const Text('Add to Favorites'),
                     onPressed: () async {
-                      if (productId != null) {
+                      if (productId != null && productId != -1) {
                         final request = context.read<CookieRequest>();
                         try {
                           await request.post(

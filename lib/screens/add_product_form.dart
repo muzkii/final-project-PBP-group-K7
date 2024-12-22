@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:final-projec/screens/menu.dart';
-import 'package:final-project/widgets/left_drawer.dart';
+import 'package:biteatui/screens/menu.dart';
+import 'package:biteatui/widgets/left_drawer.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class ProductEntryFormPage extends StatefulWidget {
   const ProductEntryFormPage({super.key});
@@ -27,7 +28,7 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
   }
 
   Future<void> _fetchStalls() async {
-    const url = "http://localhost:8000/show-json/";
+    const url = "http://localhost:8000/show_json/";
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
