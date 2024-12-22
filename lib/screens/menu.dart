@@ -221,10 +221,10 @@ class MyHomePage extends StatelessWidget {
                     child: RecommendationCard(
                       imagePath: 'assets/pictures/tomoro.png',
                       recommendationText: "chi's recommendation",
-                      title: "1/2 Sate Ayam, 1/2 Sate Kambing",
-                      subTitle: "Sate Pacil Balgebun",
-                      faculty: "Fasilkom UI",
-                      price: "16k",
+                      title: "Caramel Machiato",
+                      subTitle: "TOMORO Coffee",
+                      faculty: "FISIP UI",
+                      price: "23k",
                       cardWidth: cardWidth * 0.8,
                     ),
                   ),
@@ -313,12 +313,11 @@ class MyHomePage extends StatelessWidget {
                           child: _buildHitsUnder15kCard(
                             context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
-                            price: 'assets/pictures/price_circle13.png',
+                            priceCirclePath: 'assets/pictures/price_circle13.png',
                             department: "FISIP UI",
                             foodTitle: "Nasi Uduk",
                             stall: "Siomay Ikan Tenggiri",
                             cardWidth: MediaQuery.of(context).size.width * 0.4,
-                            productId: 15,
                           ),
                         ),
                         // Second Card
@@ -327,12 +326,11 @@ class MyHomePage extends StatelessWidget {
                           child: _buildHitsUnder15kCard(
                             context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
-                            price: 'assets/pictures/price_circle14.png',
+                            priceCirclePath: 'assets/pictures/price_circle14.png',
                             department: "FISIP UI",
                             foodTitle: "Nasi Uduk",
                             stall: "Siomay Ikan Tenggiri",
                             cardWidth: MediaQuery.of(context).size.width * 0.4,
-                            productId: 16,
                           ),
                         ),
                         // third card
@@ -341,12 +339,11 @@ class MyHomePage extends StatelessWidget {
                           child: _buildHitsUnder15kCard(
                             context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
-                            price: 'assets/pictures/price_circle14.png',
+                            priceCirclePath: 'assets/pictures/price_circle14.png',
                             department: "FISIP UI",
                             foodTitle: "Nasi Uduk",
                             stall: "Siomay Ikan Tenggiri",
                             cardWidth: MediaQuery.of(context).size.width * 0.4,
-                            productId: 12,
                           ),
                         ),
                       ],
@@ -667,183 +664,107 @@ class RecommendationCard extends StatelessWidget {
 Widget _buildHitsUnder15kCard({
   required BuildContext context,
   required String imagePath,
-  required String price,
+  required String priceCirclePath,
   required String department,
   required String foodTitle,
   required String stall,
   required double cardWidth,
-  int? productId, 
 }) {
   final screenWidth = MediaQuery.of(context).size.width;
-  final screenHeight = MediaQuery.of(context).size.height;
 
+  // Adjust these multipliers as needed for a good look
   final departmentFontSize = screenWidth * 0.035;
   final foodTitleFontSize = screenWidth * 0.045;
   final stallFontSize = screenWidth * 0.035;
-  final priceCircleSize = screenWidth * 0.18; // Adjust multiplier as needed
 
-  return GestureDetector(
-    onTap: () {
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (BuildContext ctx) {
-          return ProductQuickView(
-            imagePath: imagePath,
-            title: foodTitle,
-            subTitle: stall,
-            faculty: department,
-            price: price, 
-            productId: productId ?? -1,
-          );
-        },
-      );
-    },
-    child: Container(
-      width: cardWidth,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min, // Ensures the column takes minimal vertical space
-        children: [
-          // Food Image Section with Stack + price circle on top
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-                child: Image.asset(
-                  imagePath,
-                  width: double.infinity,
-                  height: screenHeight * 0.2, // Responsive height
-                  fit: BoxFit.cover,
-                ),
+  return Container(
+    width: cardWidth,
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20), // Increased border radius
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 10,
+          offset: const Offset(0, 5),
+        ),
+      ],
+    ),
+    child: Column(
+      children: [
+        // Food Image Section
+        Stack(
+          alignment: Alignment.center, // Center-align the price circle
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
               ),
-              // Circular container with price text
-              Container(
-                width: priceCircleSize,
-                height: priceCircleSize,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.orange, // Customize the color as needed
+              child: Image.asset(
+                imagePath,
+                width: double.infinity,
+                height: 120,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Image.asset(
+              priceCirclePath,
+              width: 90,
+              height: 90,
+            ),
+          ],
+        ),
+        const SizedBox(height: 10), // Space between image and text
+
+        // Text Content Section
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                department,
+                style: TextStyle(
+                  fontFamily: 'InriaSerif',
+                  fontStyle: FontStyle.italic,
+                  fontSize: departmentFontSize,
+                  color: Colors.orange,
                 ),
-                child: Center(
-                  child: Text(
-                    price,
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.04, // Adjust as needed
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 1),
+              Text(
+                foodTitle,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
+                  fontSize: foodTitleFontSize,
+                  color: Colors.black,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 1),
+              Text(
+                stall,
+                style: TextStyle(
+                  fontFamily: 'InriaSerif',
+                  fontSize: stallFontSize,
+                  color: Colors.black,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          // Text Content Section
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Column(
-              children: [
-                // Department
-                Text(
-                  department,
-                  style: TextStyle(
-                    fontFamily: 'InriaSerif',
-                    fontStyle: FontStyle.italic,
-                    fontSize: departmentFontSize,
-                    color: Colors.orange,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                // Food title
-                Text(
-                  foodTitle,
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.bold,
-                    fontSize: foodTitleFontSize,
-                    color: Colors.black,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                // Stall name
-                Text(
-                  stall,
-                  style: TextStyle(
-                    fontFamily: 'InriaSerif',
-                    fontSize: stallFontSize,
-                    color: Colors.black,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
-                // Add to Favorites button
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.favorite_border, size: 16),
-                  label: const Text(
-                    'Favorite',
-                    style: TextStyle(fontSize: 12),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    minimumSize: Size.zero, // Reduces the button's minimum size
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    elevation: 2,
-                    backgroundColor: Colors.orange, // Customize as needed
-                  ),
-                  onPressed: () async {
-                    if (productId != null && productId != -1) {
-                      final request = context.read<CookieRequest>();
-                      try {
-                        await request.post(
-                          'http://localhost:8000/favorite/$productId/',
-                          {},
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Added to favorites!')),
-                        );
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Failed to add to favorites')),
-                        );
-                      }
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Invalid product ID')),
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-        ],
-      ),
+        ),
+        const SizedBox(height: 10), // Padding at the bottom
+      ],
     ),
   );
 }
-
 
 class ProductQuickView extends StatelessWidget {
   final String imagePath;
@@ -865,112 +786,90 @@ class ProductQuickView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Wrap content in SingleChildScrollView to prevent overflow
-    return SingleChildScrollView(
-      child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Close Button
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.pop(context),
-              ),
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => Navigator.pop(context),
             ),
-            // Product Image
-            Image.asset(
-              imagePath,
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
+          ),
+          Image.asset(
+            imagePath,
+            height: 200,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(height: 16),
-            // Product Title
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+          ),
+          Text(
+            subTitle,
+            style: const TextStyle(fontSize: 18),
+          ),
+          Text(
+            faculty,
+            style: const TextStyle(fontSize: 16),
+          ),
+          Text(
+            price,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(height: 8),
-            // Product Subtitle
-            Text(
-              subTitle,
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 8),
-            // Faculty/Location
-            Text(
-              faculty,
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            // Price
-            Text(
-              'Price: $price',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Add to Favorites Button
-            ElevatedButton.icon(
-              icon: const Icon(Icons.favorite_border),
-              label: const Text('Add to Favorites'),
-              onPressed: () async {
-                if (productId != -1) {
-                  final request = context.read<CookieRequest>();
-                  try {
-                    await request.post(
-                      'http://localhost:8000/favorite/$productId/',
-                      {},
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Added to favorites!')),
-                    );
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Failed to add to favorites')),
-                    );
-                  }
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Invalid product ID')),
-                  );
-                }
-              },
-            ),
-            // View Full Details Button
-            TextButton(
-              child: const Text('View Full Details'),
-              onPressed: () {
-                Navigator.pop(context); // Close bottom sheet
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProductDetailPage(
-                      imagePath: imagePath,
-                      title: title,
-                      subTitle: subTitle,
-                      faculty: faculty,
-                      price: price,
-                      productId: productId, // Pass the productId
-                    ),
-                  ),
+          ),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.favorite_border),
+            label: const Text('Add to Favorites'),
+            onPressed: () async {
+              final request = context.read<CookieRequest>();
+              try {
+                await request.post(
+                  'http://localhost:8000/favorite/${productId}/',
+                  {},
                 );
-              },
-            ),
-          ],
-        ),
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Added to favorites!')),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Failed to add to favorites')),
+                );
+              }
+            },
+          ),
+          TextButton(
+            child: const Text('View Full Details'),
+            onPressed: () {
+              Navigator.pop(context); // Close bottom sheet
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductDetailPage(
+                    imagePath: imagePath,
+                    title: title,
+                    subTitle: subTitle,
+                    faculty: faculty,
+                    price: price,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -983,7 +882,8 @@ class ProductDetailPage extends StatelessWidget {
   final String subTitle;
   final String faculty;
   final String price;
-  final int? productId; 
+
+  final int? productId; // Make it optional
 
   const ProductDetailPage({
     Key? key,
@@ -995,7 +895,7 @@ class ProductDetailPage extends StatelessWidget {
     this.productId, // Now optional
   }) : super(key: key);
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -1007,11 +907,10 @@ class ProductDetailPage extends StatelessWidget {
           children: [
             Image.asset(
               imagePath,
-              height: 200,
               width: double.infinity,
+              height: 250,
               fit: BoxFit.cover,
             ),
-            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -1027,16 +926,19 @@ class ProductDetailPage extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     subTitle,
-                    style: const TextStyle(fontSize: 18),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    faculty,
+                    "Location: $faculty",
                     style: const TextStyle(fontSize: 16),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 16),
                   Text(
-                    'Price: $price',
+                    "Price: $price",
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -1045,30 +947,14 @@ class ProductDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton.icon(
+                    onPressed: () {
+                      // Add to favorites functionality
+                    },
                     icon: const Icon(Icons.favorite_border),
                     label: const Text('Add to Favorites'),
-                    onPressed: () async {
-                      if (productId != null) {
-                        final request = context.read<CookieRequest>();
-                        try {
-                          await request.post(
-                            'http://localhost:8000/favorite/$productId/',
-                            {},
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Added to favorites!')),
-                          );
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Failed to add to favorites')),
-                          );
-                        }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Invalid product ID')),
-                        );
-                      }
-                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                    ),
                   ),
                 ],
               ),
