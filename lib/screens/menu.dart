@@ -6,12 +6,6 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 class MyHomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final List<ItemHomepage> items = [
-    ItemHomepage("View Product List", Icons.list),
-    ItemHomepage("Add Product", Icons.add),
-    ItemHomepage("Logout", Icons.logout),
-  ];
-
   MyHomePage({super.key});
 
   @override
@@ -433,11 +427,11 @@ class CategoryItem extends StatefulWidget {
   final double screenWidth;
 
   const CategoryItem({
-    Key? key,
+    super.key,
     required this.imagePath,
     required this.label,
     required this.screenWidth,
-  }) : super(key: key);
+  });
 
   @override
   _CategoryItemState createState() => _CategoryItemState();
@@ -514,7 +508,7 @@ class RecommendationCard extends StatelessWidget {
   final int? productId; // Add this
 
   const RecommendationCard({
-    Key? key,
+    super.key,
     required this.imagePath,
     required this.recommendationText,
     required this.title,
@@ -523,7 +517,7 @@ class RecommendationCard extends StatelessWidget {
     required this.price,
     required this.cardWidth,
     this.productId, // Add this
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -684,6 +678,7 @@ Widget _buildHitsUnder15kCard({
       borderRadius: BorderRadius.circular(20), // Increased border radius
       boxShadow: [
         BoxShadow(
+          // ignore: deprecated_member_use
           color: Colors.black.withOpacity(0.1),
           blurRadius: 10,
           offset: const Offset(0, 5),
@@ -775,14 +770,14 @@ class ProductQuickView extends StatelessWidget {
   final int productId; // Add this
 
   const ProductQuickView({
-    Key? key,
+    super.key,
     required this.imagePath,
     required this.title,
     required this.subTitle,
     required this.faculty,
     required this.price,
     required this.productId, // Add this
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -838,13 +833,15 @@ class ProductQuickView extends StatelessWidget {
               final request = context.read<CookieRequest>();
               try {
                 await request.post(
-                  'http://localhost:8000/favorite/${productId}/',
+                  'http://localhost:8000/favorite/$productId/',
                   {},
                 );
+                // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Added to favorites!')),
                 );
               } catch (e) {
+                // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Failed to add to favorites')),
                 );
@@ -886,14 +883,14 @@ class ProductDetailPage extends StatelessWidget {
   final int? productId; // Make it optional
 
   const ProductDetailPage({
-    Key? key,
+    super.key,
     required this.imagePath,
     required this.title,
     required this.subTitle,
     required this.faculty,
     required this.price,
     this.productId, // Now optional
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
