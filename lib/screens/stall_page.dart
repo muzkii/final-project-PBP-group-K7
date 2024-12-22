@@ -141,7 +141,7 @@ class _StallPageState extends State<StallPage> {
   }
 
   Future<List<Stall>> fetchStallsByFaculty(CookieRequest request) async {
-    final response = await request.get('http://10.0.2.2:8000/show_json/');
+    final response = await request.get('http://localhost:8000/show_json/');
     List<Stall> facultyStalls = [];
     var canteens = response["canteens"]
         .where((canteen) => canteen["fields"]["faculty"] == widget.facultyId)
