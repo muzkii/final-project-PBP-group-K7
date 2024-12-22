@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/left_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
+import '../screens/stall_page.dart'; // Replace with the actual path to the file where StallPage is defined
 
 class MyHomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -436,25 +437,23 @@ class _CategoryItemState extends State<CategoryItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: (_) {
+      onTap: () { // Changed from onTapDown to onTap for navigation
         setState(() {
           isPressed = true; // Button pressed
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('You have clicked on the ${widget.label} category!'),
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StallPage(
+              facultyId: 1, // Replace with actual faculty ID if needed
+              initialCuisine: widget.label, // Pass the selected cuisine
+            ),
           ),
-        );
-      },
-      onTapUp: (_) {
-        setState(() {
-          isPressed = false; // Button released
-        });
-      },
-      onTapCancel: () {
-        setState(() {
-          isPressed = false; // Reset when tap is canceled
+        ).then((_) {
+          setState(() {
+            isPressed = false; // Reset after navigation
+          });
         });
       },
       child: Padding(

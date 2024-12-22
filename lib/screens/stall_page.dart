@@ -3,9 +3,9 @@
 import 'package:biteatui/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:biteatui/screens/product_page.dart'; // Import the ProductPage
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '../models/all_entry.dart';
-// import 'package:cached_network_image/cached_network_image.dart'; // For image caching
 
 void addStall(BuildContext context, CookieRequest request, Function refreshPage, int facultyId) async {
   final nameController = TextEditingController();
@@ -128,10 +128,12 @@ void deleteStall(BuildContext context, CookieRequest request, int stallId, Funct
 
 class StallPage extends StatefulWidget {
   final int facultyId;
+  final String? initialCuisine; // Added parameter
 
   const StallPage({
     super.key,
     required this.facultyId,
+    this.initialCuisine, // Initialize the parameter
   });
 
   @override
@@ -155,11 +157,14 @@ class _StallPageState extends State<StallPage> {
     'Beverages',
     'Dessert',
     'Others',
+    'Italian', // Added to match menu.dart categories
   ];
 
   @override
   void initState() {
     super.initState();
+    // Initialize selectedCuisine with initialCuisine if provided
+    selectedCuisine = widget.initialCuisine ?? 'All';
     fetchData();
   }
 
@@ -169,7 +174,7 @@ class _StallPageState extends State<StallPage> {
       List<Stall> fetchedStalls = await fetchStallsByFaculty(request);
       setState(() {
         allStalls = fetchedStalls;
-        displayedStalls = allStalls; // Initially display all stalls
+        filterStalls(); // Initialize displayedStalls based on selectedCuisine
       });
     } catch (e) {
       // Handle error appropriately, possibly set an error state
@@ -301,9 +306,20 @@ class _StallPageState extends State<StallPage> {
                         stall: stall,
                         onEdit: () => editStall(context, request, stall, refreshPage, widget.facultyId),
                         onDelete: () => deleteStall(context, request, stall.pk, refreshPage, widget.facultyId),
-                      );
-                    },
-                  ),
+                        onTap: () { // Define the onTap behavior
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductPage(
+                                stallId: stall.pk, // Pass the stall's primary key
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+
           ),
         ],
       ),
@@ -323,62 +339,68 @@ class StallCard extends StatelessWidget {
   final Stall stall;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final VoidCallback onTap; // Added onTap callback
 
   const StallCard({
     super.key,
     required this.stall,
     required this.onEdit,
     required this.onDelete,
+    required this.onTap, // Initialize onTap
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Stall Name
-            Text(
-              stall.fields.name,
-              style: const TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
+    return GestureDetector( // Make the entire card tappable
+      onTap: onTap, // Trigger the onTap callback
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        elevation: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Stall Name
+              Text(
+                stall.fields.name,
+                style: const TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 8.0),
-            // Cuisine Type
-            Text(
-              'Cuisine: ${stall.fields.cuisine}',
-              style: const TextStyle(fontSize: 14.0, color: Colors.grey),
-            ),
-            const Spacer(),
-            // Action Buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Edit Button
-                IconButton(
-                  onPressed: onEdit,
-                  icon: const Icon(Icons.edit, color: Colors.blue),
-                  tooltip: 'Edit Stall',
-                ),
-                // Delete Button
-                IconButton(
-                  onPressed: onDelete,
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  tooltip: 'Delete Stall',
-                ),
-              ],
-            ),
-          ],
+              const SizedBox(height: 8.0),
+              // Cuisine Type
+              Text(
+                'Cuisine: ${stall.fields.cuisine}',
+                style: const TextStyle(fontSize: 14.0, color: Colors.grey),
+              ),
+              const Spacer(),
+              // Action Buttons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Edit Button
+                  IconButton(
+                    onPressed: onEdit,
+                    icon: const Icon(Icons.edit, color: Colors.blue),
+                    tooltip: 'Edit Stall',
+                  ),
+                  // Delete Button
+                  IconButton(
+                    onPressed: onDelete,
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    tooltip: 'Delete Stall',
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
