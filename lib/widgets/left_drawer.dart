@@ -10,7 +10,7 @@ import '../forms/canteen_form.dart';
 import '../forms/faculty_form.dart';
 import '../forms/stall_form.dart';
 import '../forms/product_form.dart';
-import '../screens/login.dart';
+import '../screens/landingpage.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -54,7 +54,7 @@ class LeftDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const FacultyCanteenPage(),
+                  builder: (context) => const CanteenPage(),
                 ),
               );
             },
@@ -168,7 +168,7 @@ class LeftDrawer extends StatelessWidget {
                   );
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    MaterialPageRoute(builder: (context) => LandingPage()),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(

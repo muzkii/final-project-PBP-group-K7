@@ -55,7 +55,7 @@ class _ProductPageState extends State<ProductPage> {
       appBar: AppBar(
         title: const Text('Products'),
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<List<Product>>(
         future: fetchProducts(request),
         builder: (context, AsyncSnapshot<List<Product>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
