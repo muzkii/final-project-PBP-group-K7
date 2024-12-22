@@ -30,7 +30,7 @@ class _CanteenFormState extends State<CanteenForm> {
   Future<void> fetchFaculties() async {
     try {
       final request = context.read<CookieRequest>();
-      final response = await request.get('http://10.0.2.2:8000/show_json/');
+      final response = await request.get('http://localhost:8000/show_json/');
 
       setState(() {
         faculties = (response['faculties'] as List)
@@ -83,7 +83,7 @@ class _CanteenFormState extends State<CanteenForm> {
                     final request = context.read<CookieRequest>();
                     if (_formKey.currentState!.validate()) {
                       final response = await request.postJson(
-                        "http://10.0.2.2:8000/create-canteen-flutter/",
+                        "http://localhost:8000/create-canteen-flutter/",
                         jsonEncode(<String, String>{
                           'name': canteenNameController.text,
                           'faculty': selectedFaculty?.fields.name ?? '',

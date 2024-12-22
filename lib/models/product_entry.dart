@@ -46,7 +46,7 @@ class Fields {
     });
 
     factory Fields.fromJson(Map<String, dynamic> json) => Fields(
-        user: json["user"]
+        user: json["user"],
         name: json["name"],
         stall: json["stall"],
         price: json["price"],
