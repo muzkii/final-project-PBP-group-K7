@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:final-project/models/product_entry.dart';
-import 'package:final-project/widgets/left_drawer.dart';
+import 'package:biteatui/models/product_entry.dart';
+import 'package:biteatui/widgets/left_drawer.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
