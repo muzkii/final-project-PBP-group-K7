@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'screens/login.dart';
 import 'screens/landingpage.dart';
 import 'screens/faculty_canteen_page.dart';
-import 'screens/product_page_ave.dart';
+import 'screens/product_page.dart';
 import 'screens/stall_form.dart';
 
 void main() {
