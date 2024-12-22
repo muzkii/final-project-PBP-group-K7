@@ -1252,7 +1252,7 @@ class CoolDownHeatSection extends StatelessWidget {
                       fit: BoxFit.contain,
                     ),
                   ),
-                  // flames.png shifted slightly right and upwards
+
                   Transform.translate(
                     offset: const Offset(17, 16), // Adjust the offset as needed
                     child: Image.asset(
