@@ -3,7 +3,7 @@ import '../screens/faculty_canteen_page.dart';
 import '../screens/stall_page.dart';
 import '../screens/product_page_ave.dart';
 import '../screens/product_detail_page_ave.dart';
-import '../screens/favorites_page.dart';
+import '../screens/favorites_page_chiara.dart';
 import '../forms/canteen_form.dart';
 import '../forms/faculty_form.dart';
 import '../forms/stall_form.dart';
