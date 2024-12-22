@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import '../models/all_entry.dart';
+import '../providers/user_provider.dart';
 
 void addStall(BuildContext context, CookieRequest request, Function refreshPage, int facultyId) async {
   final nameController = TextEditingController();
@@ -160,6 +161,7 @@ class _StallPageState extends State<StallPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final userProvider = context.watch<UserProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -200,6 +202,7 @@ class _StallPageState extends State<StallPage> {
                         stall: stall,
                         onEdit: () => editStall(context, request, stall, refreshPage, widget.facultyId),
                         onDelete: () => deleteStall(context, request, stall.pk, refreshPage, widget.facultyId),
+                        isStaff: userProvider.isStaff,
                       );
                     },
                   );
@@ -209,14 +212,14 @@ class _StallPageState extends State<StallPage> {
           ),
         ],
       ),
-      floatingActionButton: Footer(
+      floatingActionButton: userProvider.isStaff ? Footer(
         onAddFaculty: () {}, // Not used
         onAddCanteen: () {}, // Not used
         onAddStall: () {
           addStall(context, request, refreshPage, widget.facultyId); // Add stall functionality
         },
         onAddProduct: () {}, // Not used
-      ),
+      ) : null,
     );
   }
 }
@@ -225,12 +228,14 @@ class StallCard extends StatelessWidget {
   final Stall stall;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final bool isStaff;
 
   const StallCard({
     super.key,
     required this.stall,
     required this.onEdit,
     required this.onDelete,
+    required this.isStaff,
   });
 
   @override
@@ -258,21 +263,23 @@ class StallCard extends StatelessWidget {
               style: const TextStyle(fontSize: 14.0, color: Colors.grey),
             ),
             const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: onEdit,
-                  icon: const Icon(Icons.edit, color: Colors.blue),
-                  tooltip: 'Edit Stall',
-                ),
-                IconButton(
-                  onPressed: onDelete,
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  tooltip: 'Delete Stall',
-                ),
-              ],
-            ),
+            if (isStaff) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: onEdit,
+                    icon: const Icon(Icons.edit, color: Colors.blue),
+                    tooltip: 'Edit Stall',
+                  ),
+                  IconButton(
+                    onPressed: onDelete,
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    tooltip: 'Delete Stall',
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),

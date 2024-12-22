@@ -7,6 +7,7 @@ import 'screens/landingpage.dart';
 import 'screens/faculty_canteen_page.dart';
 import 'screens/product_page.dart';
 import 'screens/stall_form.dart';
+import 'providers/user_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,11 +18,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      create: (_) {
-        CookieRequest request = CookieRequest();
-        return request;
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        Provider(create: (_) => CookieRequest()),
+      ],
       child: Consumer<CookieRequest>(
         builder: (context, request, child) {
           return MaterialApp(
