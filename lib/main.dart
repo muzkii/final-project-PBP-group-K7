@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/menu.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'screens/login.dart';
 import 'screens/landingpage.dart';
-import 'screens/faculty_canteen_page.dart';
-import 'screens/product_page.dart';
-import 'screens/stall_form.dart';
 import 'providers/user_provider.dart';
 
 void main() {

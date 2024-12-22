@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:biteatui/models/all_entry.dart';
+import '../providers/user_provider.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final Product product;
@@ -26,7 +27,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Future<void> fetchDetailedProductInfo() async {
     try {
       final request = context.read<CookieRequest>();
-      final response = await request.get('http://localhost:8000/detailed_product_info/${product.pk}/');
+      final response = await request.get('http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/detailed_product_info/${product.pk}/');
       // Decode JSON string to a Map
       Map<String, dynamic> jsonData = jsonDecode(response.body);
       setState(() {
@@ -40,7 +41,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   Future<User?> fetchUser(CookieRequest request, int userId) async {
-    final response = await request.get('http://localhost:8000/show_json/');
+    final response = await request.get('http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/show_json/');
     if (response["users"] != null) {
       for (var u in response["users"]) {
         if (u != null && u["pk"] == userId) {
@@ -52,7 +53,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
   
   Future<List<Review>> fetchReviews(CookieRequest request, int productId) async {
-    final response = await request.get('http://localhost:8000/show_json/');
+    final response = await request.get('http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/show_json/');
     List<Review> reviews = [];
 
     if (response["reviews"] != null) {
@@ -74,7 +75,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Future<void> submitReview(CookieRequest request, int productId, int rating, String comment) async {
     try {
       final response = await request.post(
-        'http://localhost:8000/submit-review-flutter/',
+        'http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/submit-review-flutter/',
         jsonEncode({
           'product_id': productId.toString(),
           'rating': rating.toString(),
@@ -98,7 +99,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Future<void> deleteReview(CookieRequest request, int reviewId) async {
     try {
       final response = await request.post(
-        'http://localhost:8000/delete-review-flutter/',
+        'http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/delete-review-flutter/',
         jsonEncode({
           'review_id': reviewId.toString(),
           'headers': {
@@ -120,7 +121,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Future<void> addToFavorites(CookieRequest request, int productId) async {
     try {
       final response = await request.post(
-        'http://localhost:8000/favorite/$productId/',
+        'http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/favorite/$productId/',
         {},
       );
       if (response['status'] == 'success') {
@@ -142,6 +143,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final userProvider = context.watch<UserProvider>();
     final product = widget.product;
 
     return Scaffold(
@@ -216,7 +218,19 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                     '- ${review.fields.username} on ${review.fields.createdAt}',
                                     style: const TextStyle(color: Colors.grey, fontSize: 12.0),
                                   ),
-                                  
+                                  if (userProvider.isStaff) // Check if the user is a staff member
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: TextButton(
+                                        onPressed: () {
+                                          deleteReview(request, review.pk);
+                                        },
+                                        child: const Text(
+                                          'Delete',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             );

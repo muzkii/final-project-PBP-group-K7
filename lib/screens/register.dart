@@ -158,7 +158,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                     // Send request
                     final response = await request.postJson(
-                      "http://localhost:8000/auth/register/",
+                      "http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/auth/register/",
                       jsonEncode({
                         "username": username,
                         "password1": password1,

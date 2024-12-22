@@ -1,5 +1,3 @@
-// lib/screens/stall_page.dart
-
 import 'package:biteatui/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +31,7 @@ void addStall(BuildContext context, CookieRequest request, Function refreshPage,
         TextButton(
           onPressed: () async {
             await request.post(
-              'http://localhost/create-stall-flutter/',
+              'http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/create-stall-flutter/',
               {
                 'name': nameController.text,
                 'cuisine_type': cuisineController.text,
@@ -80,7 +78,7 @@ void editStall(BuildContext context, CookieRequest request, Stall stall, Functio
         TextButton(
           onPressed: () async {
             await request.post(
-              'http://localhost/edit-stall-flutter/${stall.pk}/',
+              'http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/edit-stall-flutter/${stall.pk}/',
               {
                 'name': nameController.text,
                 'cuisine_type': cuisineController.text,
@@ -111,7 +109,7 @@ void deleteStall(BuildContext context, CookieRequest request, int stallId, Funct
       actions: [
         TextButton(
           onPressed: () async {
-            await request.post('http://localhost/delete-stall-flutter/$stallId/', {});
+            await request.post('http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/delete-stall-flutter/$stallId/', {});
             if (!context.mounted) return;
             Navigator.pop(context);
             refreshPage();
@@ -186,7 +184,7 @@ class _StallPageState extends State<StallPage> {
   }
 
   Future<List<Stall>> fetchStallsByFaculty(CookieRequest request) async {
-    final response = await request.get('http://localhost:8000/show_json/');
+    final response = await request.get('http://chiara-aqmarina-midtermproject.pbp.cs.ui.ac.id/show_json/');
     List<Stall> facultyStalls = [];
     var canteens = response["canteens"]
         .where((canteen) => canteen["fields"]["faculty"] == widget.facultyId)
@@ -295,10 +293,11 @@ class _StallPageState extends State<StallPage> {
             child: displayedStalls.isEmpty
                 ? const Center(child: Text('No stalls found for the selected cuisine.'))
                 : GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: screenWidth > 800 ? 3 : 2,
                       crossAxisSpacing: 16.0,
                       mainAxisSpacing: 16.0,
+                      childAspectRatio: (screenWidth / screenHeight) * 1.5,
                     ),
                     padding: const EdgeInsets.all(16.0),
                     itemCount: displayedStalls.length,
@@ -315,14 +314,13 @@ class _StallPageState extends State<StallPage> {
                             MaterialPageRoute(
                               builder: (context) => ProductPage(
                                 stallId: stall.pk, // Pass the stall's primary key
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-
+                          );
+                        },
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -385,16 +383,16 @@ class StallCard extends StatelessWidget {
               const Spacer(),
               // Action Buttons
               if (isStaff) ...[
-              Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                  // Edit Button
+                    // Edit Button
                     IconButton(
                       onPressed: onEdit,
                       icon: const Icon(Icons.edit, color: Colors.blue),
                       tooltip: 'Edit Stall',
                     ),
-                  // Delete Button
+                    // Delete Button
                     IconButton(
                       onPressed: onDelete,
                       icon: const Icon(Icons.delete, color: Colors.red),
@@ -403,11 +401,10 @@ class StallCard extends StatelessWidget {
                   ],
                 ),
               ],
-          ],
+            ],
           ),
         ),
       ),
     );
   }
 }
-
