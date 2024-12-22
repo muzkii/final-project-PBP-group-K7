@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import '/models/all_entry.dart'; 
+import '/models/all_entry.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({Key? key}) : super(key: key);
@@ -12,29 +12,32 @@ class FavoritesPage extends StatefulWidget {
 
 class _FavoritesPageState extends State<FavoritesPage> {
   Future<List<Product>> fetchFavorites(CookieRequest request) async {
-    // 1) Fetch the JSON array from your Django endpoint
-    final favoritesResponse = await request.get('http://localhost:8000/favorites/json/');
-    print (favoritesResponse);
+    try {
+      final favoritesResponse =
+          await request.get('http://localhost:8000/favorites/json/');
+      print('Favorites Response: $favoritesResponse');
 
-    List<Product> favorites = [];
+      return favoritesResponse.map<Product>((item) {
+        final prodJson = item['product'];
 
-    // 2) Parse each favorite’s "product" object right away
-    for (var item in favoritesResponse) {
-      final prodJson = item['product']; 
-      favorites.add(
-        Product(
-          model: 'main.product', 
-          pk: prodJson['id'], 
+        // Debugging log
+        print(
+            'Processing product: ${prodJson['name']}, Price: ${prodJson['price']}');
+
+        return Product(
+          model: 'main.product',
+          pk: prodJson['id'],
           fields: Fields(
             name: prodJson['name'],
-            price: prodJson['price'],
-            stall: prodJson['stall']['name'], 
+            price: double.tryParse(prodJson['price'].toString()) ?? double.nan, // Convert price to double
+            stall: prodJson['stall']?['name'] ?? 'Unknown Stall',
           ),
-        ),
-      );
+        );
+      }).toList();
+    } catch (e) {
+      print('Error fetching favorites: $e');
+      return [];
     }
-
-    return favorites;
   }
 
   @override
@@ -48,7 +51,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
       body: FutureBuilder<List<Product>>(
         future: fetchFavorites(request),
         builder: (context, AsyncSnapshot<List<Product>> snapshot) {
-          // 4) Display loading, empty, or your grid of favorite products
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -82,7 +84,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 }
 
-// A reusable card widget for each favorite product
 class ProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback onRemove;
@@ -95,6 +96,8 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        'Rendering product: ${product.fields.name}, Price: ${product.fields.price}, Stall: ${product.fields.stall}');
     return Card(
       elevation: 4,
       child: Column(
@@ -106,7 +109,7 @@ class ProductCard extends StatelessWidget {
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/pictures/default_food.png'), 
+                image: AssetImage('assets/pictures/default_food.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -127,7 +130,7 @@ class ProductCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Rp${product.fields.price}',
+                  'Rp${product.fields.price.toStringAsFixed(0)}', // Format price
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.orange,
@@ -139,7 +142,7 @@ class ProductCard extends StatelessWidget {
                   'Stall: ${product.fields.stall}',
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Colors.black54, // or any color you like
+                    color: Colors.black54,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -149,13 +152,12 @@ class ProductCard extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.favorite, color: Colors.red),
                       onPressed: () async {
-                        // 5) Unfavorite the product
                         final request = context.read<CookieRequest>();
                         await request.post(
                           'http://localhost:8000/unfavorite/${product.pk}/',
                           {},
                         );
-                        onRemove(); 
+                        onRemove();
                       },
                     ),
                   ],
@@ -170,9 +172,9 @@ class ProductCard extends StatelessWidget {
 }
 
 class Product {
-  final String model;  
-  final int pk;        
-  final Fields fields; 
+  final String model;
+  final int pk;
+  final Fields fields;
 
   Product({
     required this.model,
@@ -183,7 +185,7 @@ class Product {
 
 class Fields {
   final String name;
-  final String price;
+  final double price; // Changed to double
   final String stall;
 
   Fields({

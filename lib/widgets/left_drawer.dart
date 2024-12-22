@@ -10,7 +10,7 @@ import '../forms/canteen_form.dart';
 import '../forms/faculty_form.dart';
 import '../forms/stall_form.dart';
 import '../forms/product_form.dart';
-import '../screens/login.dart';
+import '../screens/landingpage.dart';
 import '../providers/user_provider.dart';
 
 class LeftDrawer extends StatelessWidget {
@@ -173,7 +173,7 @@ class LeftDrawer extends StatelessWidget {
                   );
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    MaterialPageRoute(builder: (context) => LandingPage()),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
