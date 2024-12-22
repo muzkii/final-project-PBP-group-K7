@@ -29,7 +29,7 @@ void addStall(BuildContext context, CookieRequest request, Function refreshPage,
         TextButton(
           onPressed: () async {
             await request.post(
-              'http://10.0.2.2:8000/create-stall-flutter/',
+              'http://localhost/create-stall-flutter/',
               {
                 'name': nameController.text,
                 'cuisine_type': cuisineController.text,
@@ -76,7 +76,7 @@ void editStall(BuildContext context, CookieRequest request, Stall stall, Functio
         TextButton(
           onPressed: () async {
             await request.post(
-              'http://10.0.2.2:8000/edit-stall-flutter/${stall.pk}/',
+              'http://localhost/edit-stall-flutter/${stall.pk}/',
               {
                 'name': nameController.text,
                 'cuisine_type': cuisineController.text,
@@ -107,7 +107,7 @@ void deleteStall(BuildContext context, CookieRequest request, int stallId, Funct
       actions: [
         TextButton(
           onPressed: () async {
-            await request.post('http://10.0.2.2:8000/delete-stall-flutter/$stallId/', {});
+            await request.post('http://localhost/delete-stall-flutter/$stallId/', {});
             if (!context.mounted) return;
             Navigator.pop(context);
             refreshPage();

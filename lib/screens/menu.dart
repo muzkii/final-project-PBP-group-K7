@@ -221,10 +221,10 @@ class MyHomePage extends StatelessWidget {
                     child: RecommendationCard(
                       imagePath: 'assets/pictures/tomoro.png',
                       recommendationText: "chi's recommendation",
-                      title: "Caramel Machiato",
-                      subTitle: "TOMORO Coffee",
-                      faculty: "FISIP UI",
-                      price: "23k",
+                      title: "1/2 Sate Ayam, 1/2 Sate Kambing",
+                      subTitle: "Sate Pacil Balgebun",
+                      faculty: "Fasilkom UI",
+                      price: "16k",
                       cardWidth: cardWidth * 0.8,
                     ),
                   ),
@@ -249,7 +249,7 @@ class MyHomePage extends StatelessWidget {
             // Hits under 15K Section
             Container(
               width: double.infinity,
-              height: 380, // Height of container
+              height: 450, // Height of container
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
@@ -302,7 +302,7 @@ class MyHomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   // Scrollable Cards
-                  Expanded( // Use Expanded to allow ListView to take available space
+                  Expanded(
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -313,11 +313,12 @@ class MyHomePage extends StatelessWidget {
                           child: _buildHitsUnder15kCard(
                             context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
-                            priceCirclePath: 'assets/pictures/price_circle13.png',
+                            price: "13k", // Dynamic price
                             department: "FISIP UI",
                             foodTitle: "Nasi Uduk",
                             stall: "Siomay Ikan Tenggiri",
                             cardWidth: MediaQuery.of(context).size.width * 0.4,
+                            productId: 15,
                           ),
                         ),
                         // Second Card
@@ -326,24 +327,26 @@ class MyHomePage extends StatelessWidget {
                           child: _buildHitsUnder15kCard(
                             context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
-                            priceCirclePath: 'assets/pictures/price_circle14.png',
+                            price: "14k", // Dynamic price
                             department: "FISIP UI",
                             foodTitle: "Nasi Uduk",
                             stall: "Siomay Ikan Tenggiri",
                             cardWidth: MediaQuery.of(context).size.width * 0.4,
+                            productId: 16,
                           ),
                         ),
-                        // third card
+                        // Third Card
                         Padding(
                           padding: const EdgeInsets.only(right: 16.0, bottom: 15.0),
                           child: _buildHitsUnder15kCard(
                             context: context,
                             imagePath: 'assets/pictures/nasi_uduk.png',
-                            priceCirclePath: 'assets/pictures/price_circle14.png',
+                            price: "12k", // Dynamic price
                             department: "FISIP UI",
                             foodTitle: "Nasi Uduk",
                             stall: "Siomay Ikan Tenggiri",
                             cardWidth: MediaQuery.of(context).size.width * 0.4,
+                            productId: 12,
                           ),
                         ),
                       ],
@@ -352,7 +355,31 @@ class MyHomePage extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 30), 
+            
+            // Cool Down the Heat section
+            CoolDownHeatSection(
+              screenWidth: screenWidth,
+              screenHeight: screenHeight,
+            ),
+            const SizedBox(height: 30), // Spacing after the new section
 
+            // Content Section (GridView)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: GridView.count(
+                primary: false,
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(10),
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                crossAxisCount: 3,
+                children: items.map((ItemHomepage item) {
+                  return ItemCard(item);
+                }).toList(),
+              ),
+            ),
+            const SizedBox(height: 20),
             // Content Section (GridView)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -511,7 +538,7 @@ class RecommendationCard extends StatelessWidget {
   final String faculty;
   final String price;
   final double cardWidth;
-  final int? productId; // Add this
+  final int? productId; // Added for favorites functionality
 
   const RecommendationCard({
     Key? key,
@@ -522,16 +549,16 @@ class RecommendationCard extends StatelessWidget {
     required this.faculty,
     required this.price,
     required this.cardWidth,
-    this.productId, // Add this
+    this.productId, // Optional productId
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Get screen width to scale text
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     // Adjust these multipliers as needed for a good look
-    final recTextSize = screenWidth * 0.025;   // ~10px on a 400px wide screen
+    final recTextSize = screenWidth * 0.025; // ~10px on a 400px wide screen
     final titleTextSize = screenWidth * 0.045; // ~18px on a 400px wide screen
     final subTitleTextSize = screenWidth * 0.03;
     final facultyTextSize = screenWidth * 0.032;
@@ -549,8 +576,8 @@ class RecommendationCard extends StatelessWidget {
               title: title,
               subTitle: subTitle,
               faculty: faculty,
-              price: price,
-              productId: productId ?? -1, // Add this line
+              price: price, // Pass price as string
+              productId: productId ?? -1, // Ensure a valid productId
             );
           },
         );
@@ -664,104 +691,282 @@ class RecommendationCard extends StatelessWidget {
 Widget _buildHitsUnder15kCard({
   required BuildContext context,
   required String imagePath,
-  required String priceCirclePath,
+  required String price, // Changed from priceCirclePath to price
   required String department,
   required String foodTitle,
   required String stall,
   required double cardWidth,
+  int? productId, // Ensure productId is provided
 }) {
   final screenWidth = MediaQuery.of(context).size.width;
+  final screenHeight = MediaQuery.of(context).size.height;
 
-  // Adjust these multipliers as needed for a good look
+  // Responsive font sizes
   final departmentFontSize = screenWidth * 0.035;
   final foodTitleFontSize = screenWidth * 0.045;
   final stallFontSize = screenWidth * 0.035;
+  final priceCircleSize = screenWidth * 0.18; // Adjust as needed
 
-  return Container(
-    width: cardWidth,
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20), // Increased border radius
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.1),
-          blurRadius: 10,
-          offset: const Offset(0, 5),
-        ),
-      ],
-    ),
-    child: Column(
-      children: [
-        // Food Image Section
-        Stack(
-          alignment: Alignment.center, // Center-align the price circle
-          children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
+  return GestureDetector(
+    onTap: () {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext ctx) {
+          return SingleChildScrollView(
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight: screenHeight * 0.8, // Limit to 80% of screen height
               ),
-              child: Image.asset(
-                imagePath,
-                width: double.infinity,
-                height: 120,
-                fit: BoxFit.cover,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Close Button
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                  // Product Image
+                  Image.asset(
+                    imagePath,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  const SizedBox(height: 16),
+                  // Product Title
+                  Text(
+                    foodTitle,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Product Subtitle
+                  Text(
+                    stall,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 8),
+                  // Faculty/Location
+                  Text(
+                    department,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  // Price
+                  Text(
+                    'Price: $price',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Add to Favorites Button
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.favorite_border),
+                    label: const Text('Add to Favorites'),
+                    onPressed: () async {
+                      if (productId != -1) {
+                        final request = context.read<CookieRequest>();
+                        try {
+                          await request.post(
+                            'http://localhost:8000/favorite/$productId/',
+                            {},
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Added to favorites!')),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Failed to add to favorites')),
+                          );
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Invalid product ID')),
+                        );
+                      }
+                    },
+                  ),
+                  // View Full Details Button
+                  TextButton(
+                    child: const Text('View Full Details'),
+                    onPressed: () {
+                      Navigator.pop(context); // Close bottom sheet
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailPage(
+                            imagePath: imagePath,
+                            title: foodTitle,
+                            subTitle: stall,
+                            faculty: department,
+                            price: price,
+                            productId: productId, // Pass the productId
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
-            Image.asset(
-              priceCirclePath,
-              width: 90,
-              height: 90,
-            ),
-          ],
-        ),
-        const SizedBox(height: 10), // Space between image and text
-
-        // Text Content Section
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          );
+        },
+      );
+    },
+    child: Container(
+      width: cardWidth,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20), // Rounded corners
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Minimal vertical space
+        children: [
+          // Food Image Section with Stack + price circle on top
+          Stack(
+            alignment: Alignment.center,
             children: [
-              Text(
-                department,
-                style: TextStyle(
-                  fontFamily: 'InriaSerif',
-                  fontStyle: FontStyle.italic,
-                  fontSize: departmentFontSize,
-                  color: Colors.orange,
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                child: Image.asset(
+                  imagePath,
+                  width: double.infinity,
+                  height: screenHeight * 0.2, // Responsive height
+                  fit: BoxFit.cover,
+                ),
               ),
-              const SizedBox(height: 1),
-              Text(
-                foodTitle,
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.bold,
-                  fontSize: foodTitleFontSize,
-                  color: Colors.black,
+              // Circular container with price text
+              Container(
+                width: priceCircleSize,
+                height: priceCircleSize,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.orange, // Background color for price circle
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 1),
-              Text(
-                stall,
-                style: TextStyle(
-                  fontFamily: 'InriaSerif',
-                  fontSize: stallFontSize,
-                  color: Colors.black,
+                child: Center(
+                  child: Text(
+                    price,
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.04, // Responsive font size
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white, // Price text color
+                    ),
+                  ),
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
-        ),
-        const SizedBox(height: 10), // Padding at the bottom
-      ],
+          const SizedBox(height: 8),
+          // Text Content Section
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              children: [
+                // Department
+                Text(
+                  department,
+                  style: TextStyle(
+                    fontFamily: 'InriaSerif',
+                    fontStyle: FontStyle.italic,
+                    fontSize: departmentFontSize,
+                    color: Colors.orange,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                // Food title
+                Text(
+                  foodTitle,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.bold,
+                    fontSize: foodTitleFontSize,
+                    color: Colors.black,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                // Stall name
+                Text(
+                  stall,
+                  style: TextStyle(
+                    fontFamily: 'InriaSerif',
+                    fontSize: stallFontSize,
+                    color: Colors.black,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                // Add to Favorites button
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.favorite_border, size: 16),
+                  label: const Text(
+                    'Favorite',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    minimumSize: Size.zero, // Makes button compact
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    elevation: 2,
+                    backgroundColor: Colors.orange, // Button color
+                  ),
+                  onPressed: () async {
+                    if (productId != null && productId != -1) {
+                      final request = context.read<CookieRequest>();
+                      try {
+                        await request.post(
+                          'http://localhost:8000/favorite/$productId/',
+                          {},
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Added to favorites!')),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Failed to add to favorites')),
+                        );
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Invalid product ID')),
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+        ],
+      ),
     ),
   );
 }
@@ -772,7 +977,7 @@ class ProductQuickView extends StatelessWidget {
   final String subTitle;
   final String faculty;
   final String price;
-  final int productId; // Add this
+  final int productId; // Added for favorites functionality
 
   const ProductQuickView({
     Key? key,
@@ -781,109 +986,135 @@ class ProductQuickView extends StatelessWidget {
     required this.subTitle,
     required this.faculty,
     required this.price,
-    required this.productId, // Add this
+    required this.productId, // Ensure productId is provided
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () => Navigator.pop(context),
+    // Get screen height to set max height for the pop-up
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return SingleChildScrollView(
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: screenHeight * 0.8, // Limit pop-up height to 80% of screen height
+        ),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min, // Ensures the column takes minimal vertical space
+          children: [
+            // Close Button
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.pop(context),
+              ),
             ),
-          ),
-          Image.asset(
-            imagePath,
-            height: 200,
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+            // Product Image
+            Image.asset(
+              imagePath,
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
-          ),
-          Text(
-            subTitle,
-            style: const TextStyle(fontSize: 18),
-          ),
-          Text(
-            faculty,
-            style: const TextStyle(fontSize: 16),
-          ),
-          Text(
-            price,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+            const SizedBox(height: 16),
+            // Product Title
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          ElevatedButton.icon(
-            icon: const Icon(Icons.favorite_border),
-            label: const Text('Add to Favorites'),
-            onPressed: () async {
-              final request = context.read<CookieRequest>();
-              try {
-                await request.post(
-                  'http://localhost:8000/favorite/${productId}/',
-                  {},
-                );
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Added to favorites!')),
-                );
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Failed to add to favorites')),
-                );
-              }
-            },
-          ),
-          TextButton(
-            child: const Text('View Full Details'),
-            onPressed: () {
-              Navigator.pop(context); // Close bottom sheet
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProductDetailPage(
-                    imagePath: imagePath,
-                    title: title,
-                    subTitle: subTitle,
-                    faculty: faculty,
-                    price: price,
+            const SizedBox(height: 8),
+            // Product Subtitle
+            Text(
+              subTitle,
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 8),
+            // Faculty/Location
+            Text(
+              faculty,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            // Price
+            Text(
+              'Price: $price',
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Add to Favorites Button
+            ElevatedButton.icon(
+              icon: const Icon(Icons.favorite_border),
+              label: const Text('Add to Favorites'),
+              onPressed: () async {
+                if (productId != -1) {
+                  final request = context.read<CookieRequest>();
+                  try {
+                    await request.post(
+                      'http://localhost:8000/favorite/$productId/',
+                      {},
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Added to favorites!')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Failed to add to favorites')),
+                    );
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Invalid product ID')),
+                  );
+                }
+              },
+            ),
+            // View Full Details Button
+            TextButton(
+              child: const Text('View Full Details'),
+              onPressed: () {
+                Navigator.pop(context); // Close bottom sheet
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProductDetailPage(
+                      imagePath: imagePath,
+                      title: title,
+                      subTitle: subTitle,
+                      faculty: faculty,
+                      price: price,
+                      productId: productId, // Pass the productId
+                    ),
                   ),
-                ),
-              );
-            },
-          ),
-        ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-// Add this class in menu.dart after your other widget classes
+// Product Detail Page
 class ProductDetailPage extends StatelessWidget {
   final String imagePath;
   final String title;
   final String subTitle;
   final String faculty;
   final String price;
-
-  final int? productId; // Make it optional
+  final int? productId; // Optional productId
 
   const ProductDetailPage({
     Key? key,
@@ -892,7 +1123,7 @@ class ProductDetailPage extends StatelessWidget {
     required this.subTitle,
     required this.faculty,
     required this.price,
-    this.productId, // Now optional
+    this.productId, // Optional
   }) : super(key: key);
 
   @override
@@ -901,16 +1132,17 @@ class ProductDetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: SingleChildScrollView(
+      body: SingleChildScrollView( // Ensure content is scrollable
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.asset(
               imagePath,
+              height: 200,
               width: double.infinity,
-              height: 250,
               fit: BoxFit.cover,
             ),
+            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -926,19 +1158,16 @@ class ProductDetailPage extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     subTitle,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey,
-                    ),
+                    style: const TextStyle(fontSize: 18),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     "Location: $faculty",
                     style: const TextStyle(fontSize: 16),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
                   Text(
-                    "Price: $price",
+                    'Price: $price',
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -947,14 +1176,30 @@ class ProductDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton.icon(
-                    onPressed: () {
-                      // Add to favorites functionality
-                    },
                     icon: const Icon(Icons.favorite_border),
                     label: const Text('Add to Favorites'),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50),
-                    ),
+                    onPressed: () async {
+                      if (productId != null && productId != -1) {
+                        final request = context.read<CookieRequest>();
+                        try {
+                          await request.post(
+                            'http://localhost:8000/favorite/$productId/',
+                            {},
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Added to favorites!')),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Failed to add to favorites')),
+                          );
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Invalid product ID')),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
@@ -962,6 +1207,107 @@ class ProductDetailPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class CoolDownHeatSection extends StatelessWidget {
+  final double screenWidth;
+  final double screenHeight;
+
+  const CoolDownHeatSection({
+    Key? key,
+    required this.screenWidth,
+    required this.screenHeight,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate the text size based on the screen width
+        final double textSize = screenWidth * 0.06;
+
+        // Calculate the size of the assets based on the text size
+        final double flameWidth = textSize * 6.67; // Adjust multiplier as needed
+        final double flameHeight = textSize * 2.17; // Adjust multiplier as needed
+        final double linesWidth = textSize * 5.83; // Adjust multiplier as needed
+        final double linesHeight = textSize * 1.67; // Adjust multiplier as needed
+
+        return Column(
+          children: [
+            // Row with Assets
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1), // Adjust horizontal padding as needed
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // 3bluelines.png shifted slightly left and upwards
+                  Transform.translate(
+                    offset: const Offset(-63, 26), // Adjust the offset as needed
+                    child: Image.asset(
+                      'assets/pictures/3bluelines.png',
+                      width: linesWidth, // Adjust width as needed
+                      height: linesHeight, // Adjust height as needed
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+
+                  Transform.translate(
+                    offset: const Offset(17, 16), // Adjust the offset as needed
+                    child: Image.asset(
+                      'assets/pictures/flames.png',
+                      width: flameWidth, // Adjust width as needed
+                      height: flameHeight, // Adjust height as needed
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Title: Cool Down the Heat
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Cool ",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.bold,
+                      fontSize: textSize,
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "Down the ",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.bold,
+                      fontSize: textSize,
+                      color: Colors.black, // Neutral color for "Down the"
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "Heat",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.bold,
+                      fontSize: textSize,
+                      color: Colors.red,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20), // Additional spacing below title if needed
+          ],
+        );
+      },
     );
   }
 }
