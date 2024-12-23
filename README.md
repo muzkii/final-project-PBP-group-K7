@@ -18,7 +18,7 @@
 ## Group Members  
 | Name                         | Role/Contribution              | GitHub Username  |  NPM | 
 |------------------------------|--------------------------------|------------------|------|  
-| Andriyo Averill Fahrezi      |          | @muzkii          | 2306172325   | 
+| Andriyo Averill Fahrezi      | Deployment CI/CD, Creating Landing Page, Create Reviews, Create Faculty (Canteen) Page, Create Add Faculty and Add Canteen, Helping the Admin/User Compatibility         | @muzkii          | 2306172325   | 
 | Aleksey Panfilov             |            | @ankou-k                |  2406394370 |
 | Catherine Aurellia           |             | @neaurellia                |  2306256261 |
 | Chiara Aqmarina Diankusumo   |                    | @caqqmarina                |  2306171480 |
@@ -36,19 +36,19 @@
 ## :memo: Modules and Work Division  
 ### Modules Implemented _FLUTTER_
 1. **CRD Faculty**: Implement adding,  viewing, and deleting faculties.  
-    - Developed by:  
+    - Developed by:  Andriyo Averill Fahrezi
 2. **CRD Canteen**: Manage canteen information.  
-    - Developed by: 
+    - Developed by: Andriyo Averill Fahrezi
 3. **CRD Stall**: Add, update, and remove stall information within canteens.  
-    - Developed by:  
+    - Developed by: Andriyo Averill Fahrezi  
 4. **CRD Product**: Maintain product details within stalls.  
     - Developed by:  
 5. **Homepage**: Create the homepage to display canteen summaries.  
     - Developed by:   
 6. **Login and Register**: Authentication for user and admin accounts.  
-    - Developed by:   
+    - Developed by: Kusuma Ratih Hanindyani w/ Andriyo Averill Fahrezi   
 7. **CRD Reviews**: Enable customers to write and view stall reviews.  
-    - Developed by:   
+    - Developed by: Andriyo Averill Fahrezi  
 8. **Search Bar, Navbar, and Filters**: Enhance navigation and content filtering.  
     - Developed by:   
 9. **Favorite Foods**: Allow users to save their favorite food.
@@ -56,23 +56,23 @@
   
 ### Modules Implemented _DJANGO_
 1. **CR Flutter Login**: Create a new login inside `views.py` to hamdle Flutter logins
-    - Developed by: 
+    - Developed by: Kusuma Ratih Hanindyani
 2. **CR Flutter Register**: Create a new register inside `views.py` to handle Fluter registers
-    - Developed by:
+    - Developed by: Kusuma Ratih Hanindyani
 3. **RU Flutter Logout**: Create a new logout inside `views.py` to handle Flutter logouts
-    - Developed by: 
+    - Developed by: Rayienda Hasmaradana Najlamahsa 
 5. **CRD Flutter Faculty**: Implement adding and deleting Faculty for the Flutter project
-    - Developed by:
+    - Developed by: Andriyo Averill Fahrezi
 6. **CRD Flutter Canteen**: Implement adding and deleting Canteen for the Flutter project
-    - Developed by:
+    - Developed by: Andriyo Averill Fahrezi
 7. **CRD Flutter Stall**: Implement adding and deleting Stall for the Flutter project
     - Developed by:
 8. **CRD Flutter Product**: Implement adding and deleting Product for the Flutter project
     - Developed by:
 9. **CRD Flutter Reviews**: Implement adding and deleting Review for the Flutter project
-    - Developed by:
+    - Developed by: Andriyo Averill Fahrezi
 10. Update the models of our Django Project such that it can be integrated with the Flutter project
-    - Developed by:
+    - Developed by: All members
 
 ---
 
