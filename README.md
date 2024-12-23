@@ -40,7 +40,7 @@
 2. **CRD Canteen**: Manage canteen information.  
     - Developed by: Andriyo Averill Fahrezi
 3. **CRD Stall**: Add, update, and remove stall information within canteens.  
-    - Developed by: Andriyo Averill Fahrezi  
+    - Developed by:  
 4. **CRD Product**: Maintain product details within stalls.  
     - Developed by:  
 5. **Homepage**: Create the homepage to display canteen summaries.  
