@@ -22,7 +22,7 @@
 | Aleksey Panfilov             |            | @ankou-k                |  2406394370 |
 | Catherine Aurellia           | Created the Figma for Faculty (Canteen) Page, Stall Page and Favorites Page, Help implement the Front End for Favorites Page, Edit the Left Drawer UI and managed Left Drawer routing to all pages            | @neaurellia                |  2306256261 |
 | Chiara Aqmarina Diankusumo   |                    | @caqqmarina                |  2306171480 |
-| Kusuma Ratih Hanindyani      |                 | @ksmratih                |  2306256406 |
+| Kusuma Ratih Hanindyani      | Handled authentication in Django, ensuring secure validation of user credentials and seamless integration with the Flutter front-end. Implemented user-friendly login and registration screens in Flutter.                | @ksmratih                |  2306256406 |
 | Rayienda Hasmaradana Najlamahsa | Implemented the Logout Feature, Edited the Left Drawer          | @rayienda               |  2306172735 |
 
 ---
