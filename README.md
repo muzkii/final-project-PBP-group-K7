@@ -44,15 +44,15 @@
 4. **CRD Product**: Maintain product details within stalls.  
     - Developed by:  
 5. **Homepage**: Create the homepage to display canteen summaries.  
-    - Developed by:   
+    - Developed by:   Chiara Aqmarina Diankusumo
 6. **Login and Register**: Authentication for user and admin accounts.  
     - Developed by: Kusuma Ratih Hanindyani w/ Andriyo Averill Fahrezi   
 7. **CRD Reviews**: Enable customers to write and view stall reviews.  
     - Developed by: Andriyo Averill Fahrezi  
 8. **Search Bar, Navbar, and Filters**: Enhance navigation and content filtering.  
-    - Developed by:   
+    - Developed by:   Chiara Aqmarina Diankusumo w/ Catherine Aurellia
 9. **Favorite Foods**: Allow users to save their favorite food.
-    - Developed by:
+    - Developed by:   Chiara Aqmarina Diankusumo
   
 ### Modules Implemented _DJANGO_
 1. **CR Flutter Login**: Create a new login inside `views.py` to hamdle Flutter logins
@@ -66,7 +66,7 @@
 6. **CRD Flutter Canteen**: Implement adding and deleting Canteen for the Flutter project
     - Developed by: Andriyo Averill Fahrezi
 7. **CRD Flutter Stall**: Implement adding and deleting Stall for the Flutter project
-    - Developed by:
+    - Developed by: Chiara Aqmarina Diankusumo
 8. **CRD Flutter Product**: Implement adding and deleting Product for the Flutter project
     - Developed by:
 9. **CRD Flutter Reviews**: Implement adding and deleting Review for the Flutter project
