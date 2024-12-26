@@ -20,7 +20,7 @@
 |------------------------------|--------------------------------|------------------|------|  
 | Andriyo Averill Fahrezi      | Deployment CI/CD, Creating Landing Page, Create Reviews, Create Faculty (Canteen) Page, Create Add Faculty and Add Canteen, Helping the Admin/User Compatibility         | @muzkii          | 2306172325   | 
 | Aleksey Panfilov             |            | @ankou-k                |  2406394370 |
-| Catherine Aurellia           |             | @neaurellia                |  2306256261 |
+| Catherine Aurellia           | Created the Figma for Faculty (Canteen) Page, Stall Page and Favorites Page, Help implement the Front End for Favorites Page, Edit the Left Drawer UI and managed Left Drawer routing to all pages            | @neaurellia                |  2306256261 |
 | Chiara Aqmarina Diankusumo   |                    | @caqqmarina                |  2306171480 |
 | Kusuma Ratih Hanindyani      |                 | @ksmratih                |  2306256406 |
 | Rayienda Hasmaradana Najlamahsa |          | @rayienda               |  2306172735 |
