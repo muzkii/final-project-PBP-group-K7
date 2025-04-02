@@ -19,7 +19,7 @@
 | Name                         | Role/Contribution              | GitHub Username  |  NPM | 
 |------------------------------|--------------------------------|------------------|------|  
 | Andriyo Averill Fahrezi      | Deployment CI/CD, Creating Landing Page, Create Reviews, Create Faculty (Canteen) Page, Create Add Faculty and Add Canteen, Helping the Admin/User Compatibility         | @muzkii          | 2306172325   | 
-| Aleksey Panfilov             |            | @ankou-k                |  2406394370 |
+| Aleksey Panfilov             | Implemented the Product Module, which allows users to see and interact with the different food and drink options available. Updated routing to pages through Left Drawer UI.       | @ankou-k                |  2406394370 |
 | Catherine Aurellia           | Created the Figma for Faculty (Canteen) Page, Stall Page and Favorites Page, Help implement the Front End for Favorites Page, Edit the Left Drawer UI and managed Left Drawer routing to all pages            | @neaurellia                |  2306256261 |
 | Chiara Aqmarina Diankusumo   |                    | @caqqmarina                |  2306171480 |
 | Kusuma Ratih Hanindyani      | Handled authentication in Django, ensuring secure validation of user credentials and seamless integration with the Flutter front-end. Implemented user-friendly login and registration screens in Flutter.                | @ksmratih                |  2306256406 |
